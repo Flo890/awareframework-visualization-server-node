@@ -9,7 +9,7 @@ class DbService {
             host: "localhost",
             user: "root",
             password: "",
-            database: "Bemmann_1"
+            database: "Bemmann_1_23_08_evening"
         });
         this.aware_data_connection.connect(function(err) {
             if (err) throw err;
@@ -35,18 +35,34 @@ class DbService {
         });
     };
 
+    /**
+     *
+     * @param sourceConfig object with properties:
+     *      - source_table (required)
+     *      - one of: sql_selector OR source_column (in case of the latter, also reduce_method can be set)
+     * @param deviceId
+     * @param from
+     * @param to
+     * @param granularityMins
+     * @param dataCb
+     */
     queryForAccumulatedData(sourceConfig, deviceId, from, to, granularityMins, dataCb){
-        let granularityMillis = granularityMins * 60 * 1000;
+
+        if (!sourceConfig.source_table) {
+            console.error('you must set sourceConfig.source_table!');
+        }
 
         let selector = '"selector choice failed"';
         if (sourceConfig.sql_selector){
             selector = sourceConfig.sql_selector;
         }
         else if (sourceConfig.source_column && sourceConfig.reduce_method){
-            selector = `${sourceConfig.reduce_method}(${sourceConfig.source_column})`;
+            selector = `${sourceConfig.reduce_method}(${sourceConfig.source_column}) as value`;
 
         } else if (sourceConfig.source_column) {
-            selector = `AVG(${sourceConfig.source_column})`;
+            selector = `AVG(${sourceConfig.source_column}) as value`;
+        } else {
+            console.warn('in sourceConfig you should set one of sql_selector or source_column');
         }
 
         let additionalWhereClause = '';
@@ -54,8 +70,14 @@ class DbService {
             additionalWhereClause = ` AND ${sourceConfig.where_clause}`;
         }
 
+        let groupClause = '';
+        if (granularityMins > 0){
+            let granularityMillis = granularityMins * 60 * 1000;
+            groupClause = `GROUP BY timestamp DIV ${granularityMillis}`;
+        }
+
         this.aware_data_connection.query(
-            `SELECT timestamp, ${selector} as value FROM ${sourceConfig.source_table} WHERE device_id=? AND timestamp>=? AND timestamp <=? ${additionalWhereClause} GROUP BY timestamp DIV ${granularityMillis} ORDER BY timestamp ASC;`
+            `SELECT timestamp, ${selector} FROM ${sourceConfig.source_table} WHERE device_id=? AND timestamp>=? AND timestamp <=? ${additionalWhereClause} ${groupClause} ORDER BY timestamp ASC;`
             , [deviceId, from, to]
             , (error,rows) => {
                 if (error) console.error(error);
@@ -64,6 +86,15 @@ class DbService {
         )
     }
 
+    /**
+     *
+     * @param sourceConfig
+     * @param deviceId
+     * @param from
+     * @param to
+     * @param granularityMins accumulation interval. use 0 to return unaccumulated rows
+     * @param dataObjCb
+     */
     queryForAccumulatedDataAsObject(sourceConfig, deviceId, from, to, granularityMins, dataObjCb) {
         this.queryForAccumulatedData(sourceConfig, deviceId, from, to, granularityMins, data => {
             let timeseries = TimestampLogTimeseries.fromDataArray(data);

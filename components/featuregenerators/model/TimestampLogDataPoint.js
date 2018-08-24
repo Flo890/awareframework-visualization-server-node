@@ -1,8 +1,10 @@
 class TimestampLogDataPoint {
 
-    constructor(timestamp,value){
+    constructor(timestamp, values){
         this.timestamp = timestamp;
-        this.value = value;
+        values.forEach(aValue => {
+           this[aValue.key] = aValue.value;
+        });
     }
 
 }

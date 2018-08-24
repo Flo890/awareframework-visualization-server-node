@@ -4,12 +4,20 @@ class TimestampLogTimeseries {
 
     constructor(timestampLogDataPoints, binGranularityMins){
         this.timestampLogDataPoints = timestampLogDataPoints;
+        this.timestampLogDataPoints.sort((datapoint1,datapoint2) => {return datapoint1.timestamp-datapoint2.timestamp});
         this.binGranularityMins = binGranularityMins;
     }
 
     static fromDataArray(data){
         let timestampLogDataPoints = data.map(aDataItem => {
-            return new TimestampLogDataPoint(aDataItem.timestamp, aDataItem.value);
+            return new TimestampLogDataPoint(
+                aDataItem.timestamp,
+                Object.keys(aDataItem).filter(aKey => {return aKey != 'timestamp';}).map(aKey => {
+                    return {
+                        key: aKey,
+                        value: aDataItem[aKey]
+                    };
+                }));
         });
         return new TimestampLogTimeseries(timestampLogDataPoints, 0);
     }
@@ -48,23 +56,44 @@ class TimestampLogTimeseries {
     static getBinnedTimestampForGranularity(timestamp, granularityMins){
         var moment = require('moment');
 
+        let dateformat = 'D_M_YYYY-H_m';
         if (granularityMins >= 60*24 && granularityMins % 60*24 == 0) {
             // one or more full days (no halve days like 32 hours etc.)
-            let dateformat = 'D_M_YYYY';
+            dateformat = 'D_M_YYYY';
 
         } else if (granularityMins >= 60 && granularityMins % 60 == 0) {
             // if granularity is a full hour (1 hour, 3 hours, ...). halve-hours like 1,5 hours are not supported above 60 minutes, just below.
             let granularityHours = granularityMins/60;
             let dayTimestampFloored = this.getBinnedTimestampForGranularity(timestamp, 60*24);
             let timestampMillisInDay = timestamp - dayTimestampFloored;
-            let binInDay = timestampMillisInDay/(granularityHours*60*60*1000);
+            let binInDay = Math.floor(timestampMillisInDay/(granularityHours*60*60*1000));
             let timestampBinned = dayTimestampFloored + (binInDay*granularityHours*60*60*1000);
             return timestampBinned;
 
         } else if (granularityMins < 60) {
-            let dateformat = 'D_M_YYYY-H_m';
+            let hourTimestampFloored = this.getBinnedTimestampForGranularity(timestamp, 60);
+            let timestampMillisInHour = timestamp - hourTimestampFloored;
+            let binInHour = Math.floor(timestampMillisInHour/(granularityMins*60*1000));
+            let timestampBinned = hourTimestampFloored + (binInHour * granularityMins * 60 *1000);
+            return timestampBinned;//dateformat = 'D_M_YYYY-H_m';
         }
-        return moment.parse(moment(timestamp).format(dateformat),dateformat).unix()*1000;
+        return moment(moment(timestamp).format(dateformat),dateformat).unix()*1000;
+    }
+
+    /**
+     *
+     * @param timestampSearchAfter in millis
+     * @param matchesCriteria a function of types  TimestampLogDataPoint -> boolean   , returning true if this datapoint should be returned
+     * @return the next TimestampLogDataPoint which is later than timestampSearchAfter, and matches the defined criteria
+     */
+    getNextDatapoint(timestampSearchAfter, matchesCriteria){
+        for (let i = 0; i<this.timestampLogDataPoints.length; i++) {
+            let currentDataPoint = this.timestampLogDataPoints[i];
+
+            if (currentDataPoint.timestamp <= timestampSearchAfter) continue;
+            if (!matchesCriteria(currentDataPoint)) continue;
+            return currentDataPoint;
+        }
     }
 
 }

@@ -8,9 +8,7 @@ class AbstractFeatureGenerator {
         // overwrite this!
     }
 
-    getDateFormatForGranularity(granularityMins){
-        // TODO
-    }
+
 
 }
 module.exports = AbstractFeatureGenerator;

@@ -71,12 +71,12 @@
         "sources": [
             {
              "source_table": "plugin_studentlife_audio",
-            "sql_selector":"SUM(4)",
+            "sql_selector":"SUM(4) as value",
                 "where_clause": "inference=2"
         },
             {
                 "source_table": "plugin_studentlife_audio_android",
-                "sql_selector":"SUM(4)",
+                "sql_selector":"SUM(4) as value",
                 "where_clause": "inference=2"
             }],
             "display_name": "time spent in conversation"
@@ -85,23 +85,23 @@
             "sources": [
                 {
                     "source_table": "plugin_studentlife_audio",
-                    "sql_selector":"SUM(4)",
+                    "sql_selector":"SUM(4) as value",
                     "where_clause": "inference=1"
                 },
                 {
                     "source_table": "plugin_studentlife_audio_android",
-                    "sql_selector":"SUM(4)",
+                    "sql_selector":"SUM(4) as value",
                     "where_clause": "inference=1"
                 }],
             "display_name": "time spent in noisy environment"
         },
     "phone_usage": {
         "feature_generator": "PhoneUsageFeatureGenerator",
-            "display_name": "phone usage times"
+        "display_name": "phone usage times"
     },
     "time_in_location_by_wifi": {
         "feature_generator": "HomeWorkTimeFeatureGenerator",
-            "display_name": "location"
+        "display_name": "location"
     },
     "time_at_home_by_wifi": {
         "feature_generator": "HomeWorkTimeFeatureGenerator",
