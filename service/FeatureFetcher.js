@@ -17,10 +17,7 @@ class FeatureFetcher {
 
             else if(this.datamappings.mappings[featureName].feature_generator){
                 // is special feature with generator class
-                let className = this.datamappings.mappings[featureName].feature_generator;
-                let DynamicFeatureGeneratorClass = require(`../components/featuregenerators/${className}`);
-                let featureGenerator = new DynamicFeatureGeneratorClass(this.dbService);
-                featureGenerator.getData(featureName, deviceId, from, to, granularityMins, dataCb, this.datamappings.mappings[featureName].subfeature);
+                this.getGeneratedFeature(featureName, deviceId, from, to, granularityMins, dataCb);
             }
 
         });
@@ -45,6 +42,14 @@ class FeatureFetcher {
                 console.warn('getUsualFeature promise timeout');
             },1000)})); // timeout promise
             Promise.race(promises).then(result => {dataCb(result)}).catch(error => {console.log(error)});
+    }
+
+
+    getGeneratedFeature(featureName, deviceId, from, to, granularityMins, dataCb){
+        let className = this.datamappings.mappings[featureName].feature_generator;
+        let DynamicFeatureGeneratorClass = require(`../components/featuregenerators/${className}`);
+        let featureGenerator = new DynamicFeatureGeneratorClass(this.dbService);
+        featureGenerator.getData(featureName, deviceId, from, to, granularityMins, dataCb, this.datamappings.mappings[featureName].subfeature);
     }
 
 }
