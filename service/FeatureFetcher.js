@@ -20,7 +20,7 @@ class FeatureFetcher {
                 let className = this.datamappings.mappings[featureName].feature_generator;
                 let DynamicFeatureGeneratorClass = require(`../components/featuregenerators/${className}`);
                 let featureGenerator = new DynamicFeatureGeneratorClass(this.dbService);
-                featureGenerator.getData(featureName, deviceId, from, to, granularityMins, dataCb);
+                featureGenerator.getData(featureName, deviceId, from, to, granularityMins, dataCb, this.datamappings.mappings[featureName].subfeature);
             }
 
         });

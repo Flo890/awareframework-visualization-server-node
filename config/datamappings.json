@@ -99,14 +99,10 @@
         "feature_generator": "PhoneUsageFeatureGenerator",
         "display_name": "phone usage times"
     },
-    "time_in_location_by_wifi": {
-        "feature_generator": "HomeWorkTimeFeatureGenerator",
-        "display_name": "location"
-    },
     "time_at_home_by_wifi": {
         "feature_generator": "HomeWorkTimeFeatureGenerator",
-            "display_name": "time at home",
-            "subfeature": "home"
+        "display_name": "time at home",
+        "subfeature": "home"
     },
     "time_at_work_by_wifi": {
         "feature_generator": "HomeWorkTimeFeatureGenerator",

@@ -1,4 +1,4 @@
-var TimestampLogTimeseries = require('./TimestampLogTimeseries');
+var AbstractFeatureGenerator = require('./../AbstractFeatureGenerator');
 
 /**
  * represents a timeseries of periods, e.g. the list screen-on periods
@@ -26,7 +26,7 @@ class PeriodTimeseries {
             return [];
         }
 
-        let firstBinnedTimestamp = TimestampLogTimeseries.getBinnedTimestampForGranularity(this.eventPeriod[0].startTimestamp, granulartiyMins);
+        let firstBinnedTimestamp = AbstractFeatureGenerator.getBinnedTimestampForGranularity(this.eventPeriod[0].startTimestamp, granulartiyMins);
         let lastPeriodEnd = this.eventPeriod[this.eventPeriod.length-1].endTimestamp;
 
         // 1. create empty bins
@@ -46,7 +46,7 @@ class PeriodTimeseries {
         // 2. split periods over bins
         for (let i = 0; i<this.eventPeriod.length; i++) {
             let currentPeriod = this.eventPeriod[i];
-            let binnedTimestampOfPeriod =  TimestampLogTimeseries.getBinnedTimestampForGranularity(currentPeriod.startTimestamp, granulartiyMins);
+            let binnedTimestampOfPeriod =  AbstractFeatureGenerator.getBinnedTimestampForGranularity(currentPeriod.startTimestamp, granulartiyMins);
 
             let millisToAdd = currentPeriod.endTimestamp - currentPeriod.startTimestamp;
             if (millisToAdd > periodLengthLimitThresholdMillis) {

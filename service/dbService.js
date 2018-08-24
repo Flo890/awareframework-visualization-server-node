@@ -101,5 +101,16 @@ class DbService {
             dataObjCb(timeseries);
         });
     }
+
+    getWifiLocationMappings(deviceId, callback){
+        this.meta_connection.query(
+            `SELECT wifi_ssid, location FROM wifi_location WHERE device_id=?;`
+            , [deviceId]
+            , (error,rows) => {
+                if (error) console.error(error);
+                callback(rows);
+            }
+        )
+    }
 }
 module.exports = DbService;

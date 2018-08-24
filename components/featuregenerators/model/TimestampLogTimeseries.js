@@ -1,4 +1,5 @@
 let TimestampLogDataPoint = require('./TimestampLogDataPoint');
+let PeriodTimeseries = require('./PeriodTimeseries');
 
 class TimestampLogTimeseries {
 
@@ -37,10 +38,10 @@ class TimestampLogTimeseries {
         let binnedLists = {}; // => {1234:[234,3,65], 1235:[234,32], ...}
         for(let i = 0; i<this.timestampLogDataPoints; i++){
             datapoint = this.timestampLogDataPoints[i];
-            if(!binnedLists[TimestampLogTimeseries.getBinnedTimestampForGranularity(datapoint.timestamp)]){
-                binnedLists[TimestampLogTimeseries.getBinnedTimestampForGranularity(datapoint.timestamp)] = [];
+            if(!binnedLists[AbstractFeatureGenerator.getBinnedTimestampForGranularity(datapoint.timestamp)]){
+                binnedLists[AbstractFeatureGenerator.getBinnedTimestampForGranularity(datapoint.timestamp)] = [];
             }
-            binnedLists[TimestampLogTimeseries.getBinnedTimestampForGranularity(datapoint.timestamp)].push(datapoint.value);
+            binnedLists[AbstractFeatureGenerator.getBinnedTimestampForGranularity(datapoint.timestamp)].push(datapoint.value);
         }
 
         let accumulatedBins = [];
@@ -53,32 +54,7 @@ class TimestampLogTimeseries {
         return new TimestampLogTimeseries(accumulatedBins, granularityMins);
     }
 
-    static getBinnedTimestampForGranularity(timestamp, granularityMins){
-        var moment = require('moment');
 
-        let dateformat = 'D_M_YYYY-H_m';
-        if (granularityMins >= 60*24 && granularityMins % 60*24 == 0) {
-            // one or more full days (no halve days like 32 hours etc.)
-            dateformat = 'D_M_YYYY';
-
-        } else if (granularityMins >= 60 && granularityMins % 60 == 0) {
-            // if granularity is a full hour (1 hour, 3 hours, ...). halve-hours like 1,5 hours are not supported above 60 minutes, just below.
-            let granularityHours = granularityMins/60;
-            let dayTimestampFloored = this.getBinnedTimestampForGranularity(timestamp, 60*24);
-            let timestampMillisInDay = timestamp - dayTimestampFloored;
-            let binInDay = Math.floor(timestampMillisInDay/(granularityHours*60*60*1000));
-            let timestampBinned = dayTimestampFloored + (binInDay*granularityHours*60*60*1000);
-            return timestampBinned;
-
-        } else if (granularityMins < 60) {
-            let hourTimestampFloored = this.getBinnedTimestampForGranularity(timestamp, 60);
-            let timestampMillisInHour = timestamp - hourTimestampFloored;
-            let binInHour = Math.floor(timestampMillisInHour/(granularityMins*60*1000));
-            let timestampBinned = hourTimestampFloored + (binInHour * granularityMins * 60 *1000);
-            return timestampBinned;//dateformat = 'D_M_YYYY-H_m';
-        }
-        return moment(moment(timestamp).format(dateformat),dateformat).unix()*1000;
-    }
 
     /**
      *
@@ -94,6 +70,40 @@ class TimestampLogTimeseries {
             if (!matchesCriteria(currentDataPoint)) continue;
             return currentDataPoint;
         }
+    }
+
+    /**
+     * to create a list of periods. a period is a timespan between a starting event and an ending event
+     * @param isStartingEvent function returning true, if a given datapoint is the startevent of a period
+     * @param isEndingEvent function returning true, if a given datapoint is the endevent of a period
+     * @param eventName to be set in the period object
+     * @return a PeriodTimeseries object
+     */
+    toEventPeriodTimeseries(isStartingEvent, isEndingEvent, eventName) {
+        let screenOnOrUnlockedTimes = []; // -> [{timestampOn:1234, timestampOff: 1236}, ... ]
+        let lastOffTimestamp = 0;
+        for(let i = 0; i<this.timestampLogDataPoints.length; i++){
+            let dataPoint = this.timestampLogDataPoints[i];
+            // if this data point has screen state on or unlocked
+            if (
+                isStartingEvent(dataPoint) // 1. this is a screen on/unlocked event
+                && dataPoint.timestamp > lastOffTimestamp // 2. this timestamp is later than the end of the last active period
+            ) {
+                // get next datapoint after the current one, who's state is screen off or locked
+                let nextOffDatapoint = this.getNextDatapoint(dataPoint.timestamp, isEndingEvent);
+
+                if (nextOffDatapoint) {
+                    screenOnOrUnlockedTimes.push({
+                        startTimestamp: dataPoint.timestamp,
+                        endTimestamp: nextOffDatapoint.timestamp,
+                        event: eventName
+                    });
+                    lastOffTimestamp = nextOffDatapoint.timestamp;
+                }
+            }
+        }
+
+        return new PeriodTimeseries(screenOnOrUnlockedTimes);
     }
 
 }
