@@ -1,86 +1,86 @@
 {
     "mappings": {
-    "temperature": {
-        "sources": [
-            {
-                "source_table":"plugin_openweather",
-                "source_column":"temperature"
-            }
-        ],
-            "display_name": "outside temperature"
-    },
-    "pressure": {
-        "sources": [
-            {
-                "source_table":"plugin_openweather",
-                "source_column":"pressure"
-            }
-        ],
-            "display_name": "air pressure"
-    },
-    "humidity": {
-        "sources": [
-            {
-                "source_table":"plugin_openweather",
-                "source_column":"humidity"
-            }
-        ],
-            "display_name": "humidity"
-    },
-    "cloudiness": {
-        "sources": [
-            {
-                "source_table":"plugin_openweather",
-                "source_column":"cloudiness"
-            }
-        ],
-            "display_name": "cloudiness"
-    },
-    "ambient_brightness": {
-        "sources": [
-            {
-                "source_table":"light",
-                "source_column":"double_light_lux"
-            }
-        ],
-            "display_name": "ambient brightness"
-    },
-    "ambient_noise_plugin": {
-        "sources": [
-            {
-                "source_table":"plugin_ambient_noise",
-                "source_column":"double_decibels"
-            }
-        ],
-            "display_name": "ambient noise (plugin)"
-    },
-    "ambient_noise_studentlife": {
-        "sources": [
-            {
-                "source_table":"plugin_studentlife_audio",
-                "source_column":"double_energy"
-            },
-            {
-                "source_table":"plugin_studentlife_audio_android",
-                "source_column":"double_energy"
-            }
-        ],
-            "display_name": "ambient noise (studentlife)"
-    },
-    "time_in_conversation": {
-        "sources": [
-            {
-             "source_table": "plugin_studentlife_audio",
-            "sql_selector":"SUM(4) as value",
-                "where_clause": "inference=2"
+        "temperature": {
+            "sources": [
+                {
+                    "source_table":"plugin_openweather",
+                    "source_column":"temperature"
+                }
+            ],
+                "display_name": "outside temperature"
         },
-            {
-                "source_table": "plugin_studentlife_audio_android",
+        "pressure": {
+            "sources": [
+                {
+                    "source_table":"plugin_openweather",
+                    "source_column":"pressure"
+                }
+            ],
+                "display_name": "air pressure"
+        },
+        "humidity": {
+            "sources": [
+                {
+                    "source_table":"plugin_openweather",
+                    "source_column":"humidity"
+                }
+            ],
+                "display_name": "humidity"
+        },
+        "cloudiness": {
+            "sources": [
+                {
+                    "source_table":"plugin_openweather",
+                    "source_column":"cloudiness"
+                }
+            ],
+                "display_name": "cloudiness"
+        },
+        "ambient_brightness": {
+            "sources": [
+                {
+                    "source_table":"light",
+                    "source_column":"double_light_lux"
+                }
+            ],
+                "display_name": "ambient brightness"
+        },
+        "ambient_noise_plugin": {
+            "sources": [
+                {
+                    "source_table":"plugin_ambient_noise",
+                    "source_column":"double_decibels"
+                }
+            ],
+                "display_name": "ambient noise (plugin)"
+        },
+        "ambient_noise_studentlife": {
+            "sources": [
+                {
+                    "source_table":"plugin_studentlife_audio",
+                    "source_column":"double_energy"
+                },
+                {
+                    "source_table":"plugin_studentlife_audio_android",
+                    "source_column":"double_energy"
+                }
+            ],
+                "display_name": "ambient noise (studentlife)"
+        },
+        "time_in_conversation": {
+            "sources": [
+                {
+                 "source_table": "plugin_studentlife_audio",
                 "sql_selector":"SUM(4) as value",
-                "where_clause": "inference=2"
-            }],
-            "display_name": "time spent in conversation"
-    },
+                    "where_clause": "inference=2"
+            },
+                {
+                    "source_table": "plugin_studentlife_audio_android",
+                    "sql_selector":"SUM(4) as value",
+                    "where_clause": "inference=2"
+                }],
+                "display_name": "time spent in conversation"
+        },
         "time_in_noise": {
             "sources": [
                 {
@@ -95,59 +95,61 @@
                 }],
             "display_name": "time spent in noisy environment"
         },
-    "phone_usage": {
-        "feature_generator": "PhoneUsageFeatureGenerator",
-        "display_name": "phone usage times"
-    },
-    "time_at_home_by_wifi": {
-        "feature_generator": "HomeWorkTimeFeatureGenerator",
-        "display_name": "time at home",
-        "subfeature": "home"
-    },
-    "time_at_work_by_wifi": {
-        "feature_generator": "HomeWorkTimeFeatureGenerator",
-            "display_name": "time at work",
-            "subfeature": "work"
-    },
-    "activity_recognition": {
-        "feature_generator": "ActivityRecognitionFeatureGenerator",
-            "display_name": "activity (algo1)"
-    },
-    "activity_recognition_still": {
-        "feature_generator": "ActivityRecognitionFeatureGenerator",
-            "display_name": "activity still",
-            "subfeature": "still"
-    },
-    "activity_recognition_algo2": {
-        "feature_generator": "ActivityRecognitionFeatureGeneratorAlgo2",
-            "display_name": "activity (algo2)"
-    },
-    "activity_recognition_still_2": {
-        "feature_generator": "ActivityRecognitionFeatureGeneratorAlgo2",
-            "display_name": "activity still 2",
-            "subfeature": "still"
-    },
-    "linear_accelerometer": {
+        "phone_usage": {
+            "feature_generator": "PhoneUsageFeatureGenerator",
+            "display_name": "phone usage times"
+        },
+        "time_at_home_by_wifi": {
+            "feature_generator": "HomeWorkTimeFeatureGenerator",
+            "display_name": "time at home",
+            "subfeature": "home"
+        },
+        "time_at_work_by_wifi": {
+            "feature_generator": "HomeWorkTimeFeatureGenerator",
+                "display_name": "time at work",
+                "subfeature": "work"
+        },
+        "activity_recognition_still": {
+            "feature_generator": "ActivityRecognitionFeatureGenerator",
+                "display_name": "activity still",
+                "subfeature": "still"
+        },
+        "activity_recognition_on_foot": {
+                "feature_generator": "ActivityRecognitionFeatureGenerator",
+                "display_name": "activity on foot",
+                "subfeature": "on_foot"
+        },
+        "activity_recognition_on_bicycle": {
+            "feature_generator": "ActivityRecognitionFeatureGenerator",
+            "display_name": "activity cycling",
+            "subfeature": "on_bicycle"
+        },
+        "activity_recognition_in_vehicle": {
+            "feature_generator": "ActivityRecognitionFeatureGenerator",
+            "display_name": "activity in vehicle",
+            "subfeature": "in_vehicle"
+        },
+        "linear_accelerometer": {
+                "sources": [
+                    {
+                        "source_table":"accelerometer",
+                        "source_column":"ABS(double_values_0)+ABS(double_values_1)+ABS(double_values_2)"
+                    }
+                ],
+                "display_name": "phone movement"
+        },
+        "sleep": {
+            "feature_generator": "SleepFeatureGenerator",
+                "display_name": "sleep amount"
+        },
+        "fatigue_level": {
             "sources": [
                 {
-                    "source_table":"accelerometer",
-                    "source_column":"ABS(double_values_0)+ABS(double_values_1)+ABS(double_values_2)"
+                    "source_table":"performetric_fatigue_report",
+                    "source_column":"fatigue_avg"
                 }
             ],
-            "display_name": "phone movement"
-    },
-    "sleep": {
-        "feature_generator": "SleepFeatureGenerator",
-            "display_name": "sleep amount"
-    },
-    "fatigue_level": {
-        "sources": [
-            {
-                "source_table":"performetric_fatigue_report",
-                "source_column":"fatigue_avg"
-            }
-        ],
-            "display_name": "fatigue level"
+                "display_name": "fatigue level"
+        }
     }
-}
 }
