@@ -150,6 +150,24 @@
                 }
             ],
                 "display_name": "fatigue level"
+        },
+        "calls_count": {
+            "sources": [
+                {
+                    "source_table":"calls",
+                    "sql_selector":"count(*) as value"
+                }
+            ],
+            "display_name":"amount of calls"
+        },
+        "calls_minutes": {
+            "sources": [
+                {
+                    "source_table":"calls",
+                    "sql_selector":"SUM(call_duration) as value"
+                }
+            ],
+            "display_name":"amount calls done or answered"
         }
     }
 }
