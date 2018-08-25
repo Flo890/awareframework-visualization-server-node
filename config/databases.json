@@ -1,0 +1,14 @@
+{
+  "aware_study_database": {
+    "host": "localhost",
+    "username": "root",
+    "password": "",
+    "database": "Bemmann_1_23_08_evening"
+  },
+  "meta_database": {
+    "host": "localhost",
+    "username": "root",
+    "password": "",
+    "database": "aware_metadb"
+  }
+}

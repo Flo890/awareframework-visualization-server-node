@@ -1,4 +1,5 @@
 let TimestampLogTimeseries = require('../components/featuregenerators/model/TimestampLogTimeseries');
+let dbConfigs = require('../config/databases.json');
 
 class DbService {
 
@@ -6,10 +7,10 @@ class DbService {
         var mysql = require('mysql');
 
         this.aware_data_connection = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "",
-            database: "Bemmann_1_23_08_evening"
+            host: dbConfigs.aware_study_database.host,
+            user: dbConfigs.aware_study_database.username,
+            password: dbConfigs.aware_study_database.password,
+            database: dbConfigs.aware_study_database.database
         });
         this.aware_data_connection.connect(function(err) {
             if (err) throw err;
@@ -17,10 +18,10 @@ class DbService {
         });
 
         this.meta_connection = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "",
-            database: "aware_metadb"
+            host: dbConfigs.meta_database.host,
+            user: dbConfigs.meta_database.username,
+            password: dbConfigs.meta_database.password,
+            database: dbConfigs.meta_database.database
         });
         this.meta_connection.connect(function(err) {
             if (err) throw err;
