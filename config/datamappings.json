@@ -151,6 +151,36 @@
             ],
                 "display_name": "fatigue level"
         },
+        "minutes_moderate_fatigue": {
+            "sources": [
+                {
+                    "source_table": "performetric_fatigue_report",
+                    "source_column": "minutes_moderate_fatigue",
+                    "reduce_method": "SUM"
+                }
+            ],
+            "display_name": "minutes under moderate fatigue"
+        },
+        "minutes_no_fatigue": {
+            "sources": [
+                {
+                    "source_table": "performetric_fatigue_report",
+                    "source_column": "minutes_no_fatigue",
+                    "reduce_method": "SUM"
+                }
+            ],
+            "display_name": "minutes under no fatigue"
+        },
+        "minutes_extreme_fatigue": {
+            "sources": [
+                {
+                    "source_table": "performetric_fatigue_report",
+                    "source_column": "minutes_extreme_fatigue",
+                    "reduce_method": "SUM"
+                }
+            ],
+            "display_name": "minutes under extreme fatigue"
+        },
         "calls_count": {
             "sources": [
                 {
