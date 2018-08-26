@@ -20,3 +20,12 @@ CREATE TABLE IF NOT EXISTS user_mapping_study2performetric(
   participant_id INT NOT NULL REFERENCES study_participants(participant_id),
   user_email VARCHAR(255) # mapping to the meta databases participant id
 );
+
+CREATE TABLE IF NOT EXISTS notes(
+  _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  visualization ENUM('TIMELINE') NOT NULL,
+  participant_id INT NOT NULL REFERENCES study_participants(participant_id),
+  note_text TEXT NOT NULL,
+  timeline_config TEXT NOT NULL,
+  creation_time DATETIME NOT NULL DEFAULT NOW()
+);

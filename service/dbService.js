@@ -113,5 +113,19 @@ class DbService {
             }
         )
     }
+
+    getNotes(participantId, visualization, callback){
+        this.meta_connection.query(`SELECT * FROM notes WHERE participant_id=? AND visualization=?`,[participantId, visualization],(error,rows) => {
+           if (error) console.error(error);
+           callback(rows);
+        });
+    }
+
+    saveNote(participantId, visualization, noteText, timelineConfig, callback){
+        this.meta_connection.query(`INSERT INTO notes (participant_id, visualization, note_text, timeline_config) VALUES (?,?,?,?)`,[participantId, visualization, noteText, timelineConfig],(error,rows) => {
+            if (error) console.error(error);
+            callback(rows.affectedRows == 1 ? true : false);
+        });
+    }
 }
 module.exports = DbService;
