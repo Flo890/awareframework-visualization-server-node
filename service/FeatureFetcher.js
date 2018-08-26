@@ -27,21 +27,23 @@ class FeatureFetcher {
         let sources = this.datamappings.mappings[featureName].sources;
         // TODO helpful message if no matching mapping is set
 
-        let promises = [];
+
+        new Promise((resolveDataFound,reject) => {
+            let sourcePromises = []; // when all source promises are done, we know that we have the final result. If now there's new data in the outer promise, we can return []
             for(let i = 0; i<sources.length; i++) {
-                promises.push(new Promise((resolve,reject) => {
+                sourcePromises.push(new Promise((resolveSource, rejectSource) => {
                     this.dbService.queryForAccumulatedData(sources[i], deviceId, from, to, granularityMins, data => {
                         if (data.length > 0) {
-                            resolve(data);
+                            resolveDataFound(data);
                         }
+                        resolveSource();
                     });
                 }));
             }
-            promises.push(new Promise(resolve => {setTimeout(()=>{
-                resolve([]);
-                console.warn('getUsualFeature promise timeout');
-            },1000)})); // timeout promise
-            Promise.race(promises).then(result => {dataCb(result)}).catch(error => {console.log(error)});
+            Promise.all(sourcePromises).then(result => {
+                resolveDataFound([]); // when all sources are done, return empty array, for the case that no data was found
+            })
+        }).then(result => {dataCb(result)}).catch(error => {console.log(error)});
     }
 
 
