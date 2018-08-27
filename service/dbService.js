@@ -127,5 +127,37 @@ class DbService {
             callback(rows.affectedRows == 1 ? true : false);
         });
     }
+
+    queryForDescriptiveStatistics(sources, accumulationMethod, deviceId, from, to, callback){
+        let tableQueries = sources.map(source => {
+            return `SELECT ${source.source_column} as value, timestamp FROM ${source.source_table} WHERE device_id=? AND timestamp>=? AND timestamp<=?`
+        });
+        let entriesQuery = tableQueries.join(" UNION ");
+        let maxValueSubquery = `SELECT ${accumulationMethod.fn}(value) as value FROM (${entriesQuery}) as unionedTable2`
+        let query = `SELECT value,timestamp as timestamp FROM (${entriesQuery}) as unionedTable1 WHERE value = ?;`
+
+        let parameterBunch = [deviceId,from,to];
+        let parameters = [];
+        for(let i = 0; i<tableQueries.length; i++){
+            parameters.push(...parameterBunch);
+        }
+        // first query selects the accumulated value
+        this.aware_data_connection.query(maxValueSubquery,parameters,(error,rows)=>{
+            if (error) throw error;
+
+            if (accumulationMethod.isRealAccumulator) {
+                callback(rows);
+            } else {
+                // second query (only for accumulators that are more like selecting one datapoint instead of calculating, e.g. min,max)
+                parameters.push(rows[0].value);
+                this.aware_data_connection.query(query, parameters, (error, rows) => {
+                    if (error) throw error;
+                    callback(rows);
+                });
+            }
+        });
+
+    }
+
 }
 module.exports = DbService;

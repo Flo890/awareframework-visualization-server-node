@@ -132,7 +132,7 @@
         "linear_accelerometer": {
                 "sources": [
                     {
-                        "source_table":"accelerometer",
+                        "source_table":"linear_accelerometer",
                         "source_column":"ABS(double_values_0)+ABS(double_values_1)+ABS(double_values_2)"
                     }
                 ],

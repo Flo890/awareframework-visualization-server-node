@@ -29,6 +29,7 @@ app.use('/users', usersRouter);
 app.use('/features', require('./routes/getfeature'));
 app.use('/performetric', require('./routes/performetric'));
 app.use('/notes', require('./routes/notes'));
+app.use('/descriptivestatistics', require('./routes/descriptivestatistics'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
