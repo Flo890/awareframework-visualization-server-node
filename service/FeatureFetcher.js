@@ -7,12 +7,12 @@ class FeatureFetcher {
         this.datamappings = require('../config/datamappings.json');
     }
 
-    getFeature(participantId, featureName, from, to, granularityMins, dataCb){
+    getFeature(participantId, email, featureName, from, to, granularityMins, dataCb){
         this.dbService.getDeviceIdForParticipantId(participantId, deviceId => {
 
             if(this.datamappings.mappings[featureName].sources) {
                 // is a usual feature
-                this.getUsualFeature(featureName, deviceId, from, to, granularityMins, dataCb)
+                this.getUsualFeature(featureName, (featureName == 'fatigue_level' ? email : deviceId), from, to, granularityMins, dataCb)
             }
 
             else if(this.datamappings.mappings[featureName].feature_generator){

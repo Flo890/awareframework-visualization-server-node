@@ -12,12 +12,13 @@ let featureFetcherInstance = new FeatureFetcher();
 router.get('/getone', function(req, res, next) {
     let featureName = req.query.feature_name;
     let participantId = req.query.participant_id;
+    let email = req.query.participant_email;
     let granularityMins = req.query.granularity_mins;
 
     let from = req.query.from ? req.query.from*1000 : 0;
     let to = req.query.to ? req.query.to*1000 : 9999999999999;
 
-    featureFetcherInstance.getFeature(participantId, featureName, from, to, granularityMins, data => {
+    featureFetcherInstance.getFeature(participantId, email, featureName, from, to, granularityMins, data => {
         res.send(data);
     });
 });

@@ -19,10 +19,11 @@ let descrStatService = new DescrStatService();
 router.post('/',(req,res,next) => {
     const tileConfigs = req.body.configs;
     let participantId = req.query.participant_id;
+    let participantEmail = req.query.participant_email;
 
     let promises = tileConfigs.map(aTileConfig => {
         return new Promise((resolve,reject) => {
-            descrStatService.getTileDataForConfig(aTileConfig, participantId, tileData => {
+            descrStatService.getTileDataForConfig(aTileConfig, participantId, participantEmail, tileData => {
                 resolve({
                     config: aTileConfig,
                     values:tileData,

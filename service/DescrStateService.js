@@ -22,14 +22,14 @@ class DescrStateService {
 			}
      * @param callback
      */
-    getTileDataForConfig(config, participantId, callback){
+    getTileDataForConfig(config, participantId, participantEmail, callback){
         // check for allowed accumulator (sql injection possible here)
 
 
         let dataMapping = require('../config/datamappings.json').mappings[config.featureName];
 
         this.dbService.getDeviceIdForParticipantId(participantId, deviceId => {
-            this.dbService.queryForDescriptiveStatistics(dataMapping.sources, this.accumulatorToFnMapping[config.accumulator.function], deviceId, config.from, config.to, data => {
+            this.dbService.queryForDescriptiveStatistics(dataMapping.sources, this.accumulatorToFnMapping[config.accumulator.function], (config.featureName == 'fatigue_level' ? participantEmail : deviceId), config.from, config.to, data => {
                 data.config = config;
                 callback(data);
             });
