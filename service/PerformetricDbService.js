@@ -14,23 +14,13 @@ class PerformetricDbService extends DbService {
         });
     }
 
-    getPerformetricUserMapping(callback) {
-        this.meta_connection.query("select user_mapping_study2performetric.participant_id, user_email, device_id from user_mapping_study2performetric join study_participants;",[], (error,rows)=>{
-            if (error) console.error(error);
-            callback(rows);
-        });
-    }
-
-    insertPerformetricData(performetricObj, performetricUserMapping, from, to){
+    insertPerformetricData(performetricObj, from, to){
         if (performetricObj && performetricObj[0] && performetricObj[0][0] && performetricObj[0][0].users) {
             performetricObj[0][0].users.forEach(performetricUserObj => {
                 this.aware_data_connection.query(
-                    'insert into performetric_fatigue_report (`user`,device_id,fatigue_avg,minutes_no_fatigue,minutes_moderate_fatigue,minutes_extreme_fatigue,rest_breaks,fatigue_messages,`from`,`timestamp`,`to`) values(?,?,?,?,?,?,?,?,?,?,?);',
+                    'insert into performetric_fatigue_report (`user`,device_id,fatigue_avg,minutes_no_fatigue,minutes_moderate_fatigue,minutes_extreme_fatigue,rest_breaks,fatigue_messages,`from`,`timestamp`,`to`) values("omitted",?,?,?,?,?,?,?,?,?,?);',
                     [
                         performetricUserObj.user,
-                        performetricUserMapping.filter(aMapping => {
-                            return aMapping.user_email == performetricUserObj.user;
-                        })[0].device_id,
                         performetricUserObj.metrics.fatigueAvg,
                         performetricUserObj.metrics.minutesNoFatigue,
                         performetricUserObj.metrics.minutesModerateFatigue,

@@ -15,12 +15,6 @@ CREATE TABLE IF NOT EXISTS study_participants(
   study_join DATETIME NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS user_mapping_study2performetric(
-  _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  participant_id INT NOT NULL REFERENCES study_participants(participant_id),
-  user_email VARCHAR(255) # mapping to the meta databases participant id
-);
-
 CREATE TABLE IF NOT EXISTS notes(
   _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   visualization ENUM('TIMELINE') NOT NULL,

@@ -126,9 +126,7 @@ class PerformetricService {
     }
 
     savePerformetricData(data, from, to){
-            this.performetricDbService.getPerformetricUserMapping(performetricUserMapping => {
-                this.performetricDbService.insertPerformetricData(data, performetricUserMapping, from, to);
-            });
+                this.performetricDbService.insertPerformetricData(data, from, to);
     }
 
 }
