@@ -42,7 +42,7 @@ class CorrelationDetectionService {
                                     this.preprocessFeatureDatas(f1Data, f2Data, 'SKIP', (ppF1Data, ppF2Data) => {
                                         if (ppF1Data.length > 0) {
                                             let correlationMatrix = pcorr(ppF1Data, ppF2Data);
-                                            let correlationCoefficient = correlationMatrix[0][1]; // TODO ??? should be the chi square value
+                                            let correlationCoefficient = correlationMatrix[0][1];
 
                                             /*
                                             basically following this: https://onlinecourses.science.psu.edu/stat501/node/259/

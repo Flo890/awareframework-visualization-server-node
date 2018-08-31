@@ -72,13 +72,15 @@ class DbService {
         }
 
         let groupClause = '';
+        let timestampSelectClause = 'timestamp';
         if (granularityMins > 0){
             let granularityMillis = granularityMins * 60 * 1000;
             groupClause = `GROUP BY timestamp DIV ${granularityMillis}`;
+            timestampSelectClause = `((timestamp DIV ${granularityMillis})*${granularityMillis}) as timestamp`;
         }
 
         this.aware_data_connection.query(
-            `SELECT timestamp, ${selector} FROM ${sourceConfig.source_table} WHERE device_id=? AND timestamp>=? AND timestamp <=? ${additionalWhereClause} ${groupClause} ORDER BY timestamp ASC;`
+            `SELECT ${timestampSelectClause}, ${selector} FROM ${sourceConfig.source_table} WHERE device_id=? AND timestamp>=? AND timestamp <=? ${additionalWhereClause} ${groupClause} ORDER BY timestamp ASC;`
             , [deviceId, from, to]
             , (error,rows) => {
                 if (error) console.error(error);
