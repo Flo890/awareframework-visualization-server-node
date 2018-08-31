@@ -5,7 +5,7 @@ let notesServiceInstance = new NotesService();
 
 router.post('/save', (req,res,next) => {
 
-    let participantId = req.query.participant_id;
+    let participantId = req.user.participant_id;
     let noteText = req.body.inputText;
     let timelineConfig = req.body.timelineConfig;
 
@@ -19,7 +19,7 @@ router.post('/save', (req,res,next) => {
 });
 
 router.get('/get', (req,res,next) => {
-    let participantId = req.query.participant_id;
+    let participantId = req.user.participant_id;
     if (!participantId) {
         res.status(400).send('parameter participantId is not set');
         return;

@@ -6,18 +6,22 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "compute-pcorr": "^1.0.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "express-session": "^1.15.6",
     "http-errors": "~1.6.2",
     "jStat": "^1.7.1",
     "jade": "~1.11.0",
     "moment": "^2.22.2",
     "morgan": "~1.9.0",
     "mysql": "^2.16.0",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^2.2.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
   }
 }

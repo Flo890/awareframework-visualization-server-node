@@ -29,12 +29,52 @@ class DbService {
         });
     };
 
+    /**
+     * @deprecated use {@see getUserByParticipantId}
+     * @param participantId
+     * @param callback
+     */
     getDeviceIdForParticipantId(participantId, callback) {
         this.meta_connection.query('SELECT device_id FROM study_participants WHERE participant_id=?', [participantId], function(err, rows) {
             if (err) console.error(err);
             callback(rows[0].device_id);
         });
     };
+
+    getUserByParticipantId(participantId, callback) {
+        this.meta_connection.query('SELECT _id as id,device_id,participant_id,password FROM study_participants WHERE participant_id=?', [participantId], function(err, rows) {
+            if (err) {
+                console.error('could not fetch participant',err);
+                callback(err,null);
+            } else {
+                callback(null, rows[0]);
+            }
+        });
+    }
+
+    getUserById(id, callback) {
+        this.meta_connection.query('SELECT _id as id,device_id,participant_id,password FROM study_participants WHERE _id=?', [id], function(err, rows) {
+            if (err) {
+                console.error('could not fetch participant',err);
+                callback(err,null);
+            } else {
+                callback(null, rows[0]);
+            }
+        });
+    }
+
+    addUser(participantId, password, deviceId, rescueTimeApiKey, callback) {
+        this.meta_connection.query('INSERT INTO study_participants (device_id,participant_id,password,rescuetime_api_key) VALUES(?,?,?,?)', [deviceId,participantId,password,rescueTimeApiKey], function(err, rows) {
+            if (err){
+                console.error(err);
+                callback(err,null);
+            } else {
+                if (rows.affectedRows != 1) console.error(`adding new user: affectedRows was not 1 but ${rows.affectedRows}`);
+
+                callback(null, rows.insertId);
+            }
+        });
+    }
 
     /**
      *

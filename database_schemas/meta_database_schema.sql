@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS study_participants(
   device_id VARCHAR(150) NOT NULL,
   participant_id INT NOT NULL,
   password VARCHAR(150) NOT NULL,
-  study_join DATETIME NOT NULL DEFAULT NOW()
+  rescuetime_api_key TEXT NULL DEFAULT NULL,
+  study_join DATETIME NOT NULL DEFAULT NOW(),
+  UNIQUE (participant_id)
 );
 
 CREATE TABLE IF NOT EXISTS notes(

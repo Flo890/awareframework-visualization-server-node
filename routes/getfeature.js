@@ -7,11 +7,11 @@ let featureFetcherInstance = new FeatureFetcher();
 
 /**
  * example call:
- * http://localhost:3333/features/getone?feature_name=temperature&participant_id=1&granularity_mins=10&from=1534740240000&to=1534959000000
+ * http://localhost:3333/features/getone?feature_name=temperature&granularity_mins=10&from=1534740240000&to=1534959000000
  */
 router.get('/getone', function(req, res, next) {
     let featureName = req.query.feature_name;
-    let participantId = req.query.participant_id;
+    let participantId = req.user.participant_id; // get participant_id from the user object the client is authenticated with
     let email = req.query.participant_email;
     let granularityMins = req.query.granularity_mins;
 
@@ -27,10 +27,10 @@ router.options('/getone', (req,res,next) => {res.status(200).send()});
 
 /**
  * example call:
- *
+ * http://localhost:3333/features/getallavailables
  */
 router.get('/getallavailables', function(req,res,next) {
-    let participantId = req.query.participantId;
+    let participantId = req.user.participant_Id; // get participant_id from the user object the client is authenticated with
 
     let mappingConfig = require('../config/datamappings.json').mappings;
     var features = Object.keys(mappingConfig).map(featureKey => {

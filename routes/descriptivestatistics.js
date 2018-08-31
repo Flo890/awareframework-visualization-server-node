@@ -15,10 +15,13 @@ let descrStatService = new DescrStatService();
 			...
 			]}
    and url parameter participant_id is required
+
+example call together with the above post body:
+    http://localhost:3333/descriptivestatistics?participant_email=Florian.Bemmann@campus.lmu.de
  */
 router.post('/',(req,res,next) => {
     const tileConfigs = req.body.configs;
-    let participantId = req.query.participant_id;
+    let participantId = req.user.participant_id;
     let participantEmail = req.query.participant_email;
 
     let promises = tileConfigs.map(aTileConfig => {
