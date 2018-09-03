@@ -34,6 +34,8 @@ class PerformetricDbService extends DbService {
                     function (err, rows) {
                         if (err) {
                             console.error(err);
+                        } else if (rows.affectedRows != 1) {
+                            console.error(`insert performetric data: affected rows was ${rows.affectedRows}!`);
                         } else {
                             console.log('inserted performetric data');
                         }
