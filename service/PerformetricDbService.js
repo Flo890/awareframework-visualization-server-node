@@ -15,6 +15,7 @@ class PerformetricDbService extends DbService {
     }
 
     insertPerformetricData(performetricObj, from, to){
+        const dateFormat = 'YYYY-MM-DD HH:mm';
         console.log(performetricObj);
         if (performetricObj && performetricObj[0] && performetricObj[0][0] && performetricObj[0][0].users) {
             performetricObj[0][0].users.forEach(performetricUserObj => {
@@ -28,9 +29,9 @@ class PerformetricDbService extends DbService {
                         performetricUserObj.metrics.minutesExtremeFatigue,
                         performetricUserObj.metrics.restBreaks,
                         performetricUserObj.metrics.fatigueMessages,
-                        moment.unix(from / 1000).format(),
+                        moment.unix(from / 1000).format(dateFormat),
                         from,
-                        moment.unix(to / 1000).format()
+                        moment.unix(to / 1000).format(dateFormat)
                     ],
                     function (err, rows) {
                         if (err) {
