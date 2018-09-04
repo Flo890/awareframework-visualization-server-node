@@ -16,7 +16,6 @@ class PerformetricDbService extends DbService {
 
     insertPerformetricData(performetricObj, from, to){
         const dateFormat = 'YYYY-MM-DD HH:mm';
-        console.log(performetricObj);
         if (performetricObj && performetricObj[0] && performetricObj[0][0] && performetricObj[0][0].users) {
             performetricObj[0][0].users.forEach(performetricUserObj => {
                 this.aware_data_connection.query(
