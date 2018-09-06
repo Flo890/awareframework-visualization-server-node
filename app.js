@@ -42,6 +42,7 @@ app.use('/features', [auth.ensureAuthenticated, require('./routes/getfeature')])
 app.use('/performetric', [auth.ensureAuthenticated, require('./routes/performetric')]);
 app.use('/notes', [auth.ensureAuthenticated, require('./routes/notes')]);
 app.use('/descriptivestatistics', [auth.ensureAuthenticated, require('./routes/descriptivestatistics')]);
+app.use('/rescuetime', [auth.ensureAuthenticated, require('./routes/rescuetime')]);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
