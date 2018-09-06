@@ -198,6 +198,28 @@
                 }
             ],
             "display_name":"amount calls done or answered"
+        },
+        "time_email": {
+            "sources": [
+                {
+                    "source_table": "rescuetime_usage_log",
+                    "reduce_method": "SUM",
+                    "source_column": "time_spent_secs",
+                    "where_clause": "category='Email'"
+                }
+            ],
+            "display_name": "Time spent with E-Mail"
+        },
+        "time_productivity_level_0": {
+            "sources": [
+                {
+                    "source_table": "rescuetime_usage_log",
+                    "reduce_method": "SUM",
+                    "source_column": "time_spent_secs",
+                    "where_clause": "productivity=0"
+                }
+            ],
+            "display_name": "Time spent with productivity 0"
         }
     }
 }

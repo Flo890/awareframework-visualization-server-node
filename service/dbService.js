@@ -1,5 +1,7 @@
 let TimestampLogTimeseries = require('../components/featuregenerators/model/TimestampLogTimeseries');
 let dbConfigs = require('../config/databases.json');
+const md5 = require('md5');
+
 
 class DbService {
 
@@ -87,7 +89,7 @@ class DbService {
      * @param granularityMins
      * @param dataCb
      */
-    queryForAccumulatedData(sourceConfig, deviceId, from, to, granularityMins, dataCb){
+    async queryForAccumulatedData(sourceConfig, deviceId, from, to, granularityMins, dataCb){
 
         if (!sourceConfig.source_table) {
             console.error('you must set sourceConfig.source_table!');
@@ -119,9 +121,35 @@ class DbService {
             timestampSelectClause = `((timestamp DIV ${granularityMillis})*${granularityMillis}) as timestamp`;
         }
 
+        // TODO this lookup here is bad architecture
+        let apikeyHash = await new Promise((resolve) => {
+            if (sourceConfig.source_table == 'rescuetime_usage_log'){
+                this.meta_connection.query('SELECT rescuetime_api_key FROM study_participants WHERE device_id=?;',[deviceId], (err,rows) => {
+                    let apikeyHash = 'does not exist';
+                    if (err) {
+                        console.error(err);
+                    } else if (rows.length == 0){
+                        // value stays 'does not exist', so no data will be found later
+                    } else {
+                        apikeyHash = md5(rows[0].rescuetime_api_key);
+                    }
+                    resolve(apikeyHash);
+                });
+            } else {
+                resolve(undefined);
+            }
+        });
+
+        let whereDeviceIdClause = 'device_id=? AND';
+        let parameters = [deviceId, from, to];
+        if (apikeyHash != undefined) {
+            additionalWhereClause += ` AND apikey_hash='${apikeyHash}' `;
+            whereDeviceIdClause = '';
+            parameters = [from, to];
+        }
         this.aware_data_connection.query(
-            `SELECT ${timestampSelectClause}, ${selector} FROM ${sourceConfig.source_table} WHERE device_id=? AND timestamp>=? AND timestamp <=? ${additionalWhereClause} ${groupClause} ORDER BY timestamp ASC;`
-            , [deviceId, from, to]
+            `SELECT ${timestampSelectClause}, ${selector} FROM ${sourceConfig.source_table} WHERE ${whereDeviceIdClause} timestamp>=? AND timestamp <=? ${additionalWhereClause} ${groupClause} ORDER BY timestamp ASC;`
+            , parameters
             , (error,rows) => {
                 if (error) console.error(error);
                 dataCb(rows);
@@ -139,8 +167,8 @@ class DbService {
      * @param dataObjCb
      */
     queryForAccumulatedDataAsObject(sourceConfig, deviceId, from, to, granularityMins, dataObjCb) {
-        this.queryForAccumulatedData(sourceConfig, deviceId, from, to, granularityMins, data => {
-            let timeseries = TimestampLogTimeseries.fromDataArray(data);
+        this.queryForAccumulatedData(sourceConfig, deviceId, from, to, granularityMins, async data => {
+            let timeseries = TimestampLogTimeseries.fromDataArray(await data);
             dataObjCb(timeseries);
         });
     }
