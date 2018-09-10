@@ -239,5 +239,33 @@ class DbService {
 
     }
 
+    persistConfig(participantId, configKey, configObject, callback){
+        this.meta_connection.query('INSERT INTO dashboard_configs (participant_id,config_key,config_object,updated_at) VALUES(?,?,?,NOW()) ON DUPLICATE KEY UPDATE config_object=?, updated_at=NOW();',
+            [participantId, configKey, JSON.stringify(configObject), JSON.stringify(configObject)],
+            (err,rows) => {
+                if (err) {
+                    console.error('upserting dashboard config failed',err);
+                } else if (rows.affectedRows != 1) {
+                    console.error(`upserting dashboard config: affected rows count was not 1 but ${rows.affectedRows}`);
+                }
+                callback();
+        });
+    }
+
+    getAllDashboardConfigs(participantId, callback){
+        this.meta_connection.query('SELECT config_key, config_object FROM dashboard_configs WHERE participant_id=?;',
+            [participantId], (err,rows) => {
+                if (rows && rows.length > 0) {
+                    let configs = {};
+                    for(let i = 0; i<rows.length; i++) {
+                        configs[rows[i].config_key] = rows[i].config_object;
+                    }
+                    callback(configs);
+                } else {
+                    callback({});
+                }
+            });
+    }
+
 }
 module.exports = DbService;

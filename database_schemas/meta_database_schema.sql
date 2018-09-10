@@ -25,3 +25,12 @@ CREATE TABLE IF NOT EXISTS notes(
   timeline_config TEXT NOT NULL,
   creation_time DATETIME NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS dashboard_configs (
+  _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  participant_id INT NOT NULL REFERENCES study_participants(participant_id),
+  config_key VARCHAR(255) NOT NULL,
+  config_object TEXT NOT NULL,
+  updated_at DATETIME NOT NULL DEFAULT NOW(),
+  UNIQUE(participant_id, config_key)
+);
