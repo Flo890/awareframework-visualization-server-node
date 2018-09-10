@@ -34,6 +34,11 @@ class FeatureFetcher {
                 sourcePromises.push(new Promise((resolveSource, rejectSource) => {
                     this.dbService.queryForAccumulatedData(sources[i], deviceId, from, to, granularityMins, data => {
                         if (data && data.length > 0) {
+                            // TODO another bad architecture thing
+                            // RescueTime data is hourly, so we have to upsample it if granularity is higher than 60 minutes
+                            if (granularityMins < 60 && sources[i].source_table == 'rescuetime_usage_log') {
+                                this.upsampleData(data,granularityMins);
+                            }
                             resolveDataFound(data);
                         }
                         resolveSource();
@@ -52,6 +57,24 @@ class FeatureFetcher {
         let DynamicFeatureGeneratorClass = require(`../components/featuregenerators/${className}`);
         let featureGenerator = new DynamicFeatureGeneratorClass(this.dbService);
         featureGenerator.getData(featureName, deviceId, from, to, granularityMins, dataCb, this.datamappings.mappings[featureName].subfeature);
+    }
+
+    upsampleData(data, targetGranularityMins){
+        for(let i = 0; i<data.length-1; i++) {
+            let timediffToNext = data[i+1].timestamp - data[i].timestamp;
+            if (timediffToNext == 60*60*1000) {
+                // if data granularity is hourly (for RescueTime the maximum) upsample this gap to target granularity
+                let prevRealTimestamp = data[i].timestamp;
+                for(let j = 0; j<timediffToNext/(targetGranularityMins*60*1000); j++) {
+                    let newObject = {
+                        timestamp: prevRealTimestamp + (targetGranularityMins*60*1000*(j+1)),
+                        value: (data[i + 1].value + data[i].value) / 2
+                    }
+                    data.splice(i+1, 0, newObject);
+                    i++;
+                }
+            }
+        }
     }
 
 }
