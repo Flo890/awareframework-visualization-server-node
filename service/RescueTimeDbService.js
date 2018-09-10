@@ -2,6 +2,7 @@ const DbService = require('./dbService');
 const moment = require('moment');
 const md5 = require('md5');
 var fs = require("fs");
+var path = require('path');
 
 class RescueTimeDbService extends DbService {
 
@@ -13,7 +14,7 @@ class RescueTimeDbService extends DbService {
 
     createTableIfNotExists(){
         const dbConnection = this.aware_data_connection;
-        fs.readFile('../database_schemas/rescuetime_database_schema.sql', "utf8", function(fileErr, data) {
+        fs.readFile(path.join(__dirname, '../database_schemas/rescuetime_database_schema.sql'), "utf8", function(fileErr, data) {
             if (fileErr) {
                 console.error('could not read RescueTime sql file',fileErr);
             }

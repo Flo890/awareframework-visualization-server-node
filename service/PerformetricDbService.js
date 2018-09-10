@@ -1,6 +1,7 @@
 const DbService = require('./dbService');
 const moment = require('moment');
 var fs = require("fs");
+var path = require('path');
 
 class PerformetricDbService extends DbService {
 
@@ -12,7 +13,7 @@ class PerformetricDbService extends DbService {
 
     createTableIfNotExists(){
         const awareDbConnection = this.aware_data_connection;
-        fs.readFile('../database_schemas/performetric_database_schema.sql', "utf8", function(fileErr, data) {
+        fs.readFile(path.join(__dirname, '../database_schemas/performetric_database_schema.sql'), "utf8", function(fileErr, data) {
             if (fileErr) {
                 console.error('could not read performetric sql file',fileErr);
             }
