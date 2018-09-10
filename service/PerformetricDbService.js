@@ -1,7 +1,30 @@
 const DbService = require('./dbService');
 const moment = require('moment');
+var fs = require("fs");
 
 class PerformetricDbService extends DbService {
+
+    constructor(){
+        super(() => {
+            this.createTableIfNotExists();
+        });
+    }
+
+    createTableIfNotExists(){
+        const awareDbConnection = this.aware_data_connection;
+        fs.readFile('../database_schemas/performetric_database_schema.sql', "utf8", function(fileErr, data) {
+            if (fileErr) {
+                console.error('could not read performetric sql file',fileErr);
+            }
+            awareDbConnection.query(data,[],(err,rows) => {
+                if(err){
+                    console.error('Performetric table create script failed');
+                    console.error(err);
+                }
+                console.log('Performetric create script executed');
+            });
+        });
+    }
 
     getLatestPerformetricSyncDate(callback){
         this.aware_data_connection.query('select max(`to`) as latest_to from performetric_fatigue_report;', [], function(err, rows) {

@@ -33,7 +33,7 @@ class FeatureFetcher {
             for(let i = 0; i<sources.length; i++) {
                 sourcePromises.push(new Promise((resolveSource, rejectSource) => {
                     this.dbService.queryForAccumulatedData(sources[i], deviceId, from, to, granularityMins, data => {
-                        if (data.length > 0) {
+                        if (data && data.length > 0) {
                             resolveDataFound(data);
                         }
                         resolveSource();

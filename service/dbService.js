@@ -5,29 +5,39 @@ const md5 = require('md5');
 
 class DbService {
 
-    constructor(){
+    constructor(callback){
         var mysql = require('mysql');
 
-        this.aware_data_connection = mysql.createConnection({
-            host: dbConfigs.aware_study_database.host,
-            user: dbConfigs.aware_study_database.username,
-            password: dbConfigs.aware_study_database.password,
-            database: dbConfigs.aware_study_database.database
-        });
-        this.aware_data_connection.connect(function(err) {
-            if (err) throw err;
-            console.log("Connected!");
+        let awareDbConnectPromise = new Promise(resolve => {
+            this.aware_data_connection = mysql.createConnection({
+                host: dbConfigs.aware_study_database.host,
+                user: dbConfigs.aware_study_database.username,
+                password: dbConfigs.aware_study_database.password,
+                database: dbConfigs.aware_study_database.database
+            });
+            this.aware_data_connection.connect(function (err) {
+                if (err) throw err;
+                console.log("Connected!");
+                resolve();
+            });
         });
 
-        this.meta_connection = mysql.createConnection({
-            host: dbConfigs.meta_database.host,
-            user: dbConfigs.meta_database.username,
-            password: dbConfigs.meta_database.password,
-            database: dbConfigs.meta_database.database
+        let metaDbConnectPromise = new Promise(resolve => {
+            this.meta_connection = mysql.createConnection({
+                host: dbConfigs.meta_database.host,
+                user: dbConfigs.meta_database.username,
+                password: dbConfigs.meta_database.password,
+                database: dbConfigs.meta_database.database
+            });
+            this.meta_connection.connect(function (err) {
+                if (err) throw err;
+                console.log("Connected!");
+                resolve();
+            });
         });
-        this.meta_connection.connect(function(err) {
-            if (err) throw err;
-            console.log("Connected!");
+
+        Promise.all([awareDbConnectPromise, metaDbConnectPromise]).then(() => {
+            if (callback) callback();
         });
     };
 

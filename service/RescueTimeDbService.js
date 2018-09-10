@@ -1,8 +1,31 @@
 const DbService = require('./dbService');
 const moment = require('moment');
 const md5 = require('md5');
+var fs = require("fs");
 
 class RescueTimeDbService extends DbService {
+
+    constructor(){
+        super(() => {
+            this.createTableIfNotExists();
+        });
+    }
+
+    createTableIfNotExists(){
+        const dbConnection = this.aware_data_connection;
+        fs.readFile('../database_schemas/rescuetime_database_schema.sql', "utf8", function(fileErr, data) {
+            if (fileErr) {
+                console.error('could not read RescueTime sql file',fileErr);
+            }
+            dbConnection.query(data,[],(err,rows) => {
+                if(err){
+                    console.error('rescuetime table create script failed');
+                    console.error(err);
+                }
+                console.log('RescueTime create script executed');
+            });
+        });
+    }
 
     getAllApiKeys(callback){
         this.meta_connection.query('SELECT DISTINCT rescuetime_api_key FROM study_participants WHERE rescuetime_api_key IS NOT NULL;',[],(err,rows) => {

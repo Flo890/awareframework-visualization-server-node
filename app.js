@@ -60,4 +60,23 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// init scheduled tasks
+var schedule = require('node-schedule');
+
+// Performetric Sync
+let PerformetricService = require('./service/PerformetricService');
+let performetricService = new PerformetricService();
+var performetricScheduler = schedule.scheduleJob('0 0 * * * *', function(){
+    console.log('Performetric sync scheduler triggered');
+    performetricService.sync(res => {console.log(res)});
+});
+
+// RescueTime
+let RescueTimeService = require('./service/RescueTimeService');
+let rescueTimeService = new RescueTimeService();
+var rescuetimeScheduler = schedule.scheduleJob('0 0 * * * *', function(){
+    console.log('RescueTime sync scheduler triggered');
+    rescueTimeService.sync(res => {console.log(res)});
+});
+
 module.exports = app;
