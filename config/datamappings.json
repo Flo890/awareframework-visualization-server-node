@@ -4,28 +4,34 @@
             "sources": [
                 {
                     "source_table":"plugin_openweather",
-                    "source_column":"temperature"
+                    "source_column":"temperature",
+                    "where_clause":"temperature!=0"
                 }
             ],
-                "display_name": "outside temperature"
+            "display_name": "outside temperature",
+            "display_unit": "°C"
         },
         "pressure": {
             "sources": [
                 {
                     "source_table":"plugin_openweather",
-                    "source_column":"pressure"
+                    "source_column":"pressure",
+                    "where_clause":"pressure!=0"
                 }
             ],
-                "display_name": "air pressure"
+            "display_name": "air pressure",
+            "display_unit": "hPa"
         },
         "humidity": {
             "sources": [
                 {
                     "source_table":"plugin_openweather",
-                    "source_column":"humidity"
+                    "source_column":"humidity",
+                    "where_clause":"humidity!=0"
                 }
             ],
-                "display_name": "humidity"
+            "display_name": "humidity",
+            "display_unit": "%"
         },
         "cloudiness": {
             "sources": [
@@ -34,7 +40,8 @@
                     "source_column":"cloudiness"
                 }
             ],
-                "display_name": "cloudiness"
+            "display_name": "cloudiness",
+            "display_unit": "%"
         },
         "ambient_brightness": {
             "sources": [
@@ -44,7 +51,8 @@
                     "only_for_os":"android"
                 }
             ],
-                "display_name": "ambient brightness"
+            "display_name": "ambient brightness",
+            "display_unit": "lux"
         },
         "ambient_noise_plugin": {
             "sources": [
@@ -53,7 +61,8 @@
                     "source_column":"double_decibels"
                 }
             ],
-                "display_name": "ambient noise (plugin)"
+            "display_name": "ambient noise (plugin)",
+            "display_unit": "dB"
         },
         "ambient_noise_studentlife": {
             "sources": [
@@ -68,7 +77,7 @@
                     "only_for_os":"android"
                 }
             ],
-                "display_name": "ambient noise (studentlife)"
+            "display_name": "ambient noise (studentlife)"
         },
         "time_in_conversation": {
             "sources": [
@@ -83,8 +92,10 @@
                     "sql_selector":"SUM(4) as value",
                     "where_clause": "inference=2",
                     "only_for_os":"android"
-                }],
-                "display_name": "time spent in conversation"
+                }
+            ],
+            "display_name": "time spent in conversation",
+            "display_unit": "minutes"
         },
         "time_in_noise": {
             "sources": [
@@ -99,46 +110,55 @@
                     "sql_selector":"SUM(4) as value",
                     "where_clause": "inference=1",
                     "only_for_os":"android"
-                }],
-            "display_name": "time spent in noisy environment"
+                }
+            ],
+            "display_name": "time spent in noisy environment",
+            "display_unit": "minutes"
         },
         "phone_usage": {
             "feature_generator": "PhoneUsageFeatureGenerator",
-            "display_name": "phone usage times"
+            "display_name": "phone usage",
+            "display_unit": "seconds"
         },
         "time_at_home_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
             "display_name": "time at home",
-            "subfeature": "home"
+            "subfeature": "home",
+            "display_unit": "seconds"
         },
         "time_at_work_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
-                "display_name": "time at work",
-                "subfeature": "work"
+            "display_name": "time at work",
+            "subfeature": "work",
+            "display_unit": "seconds"
         },
         "activity_recognition_still": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity still",
             "subfeature": "still",
-            "only_for_os":"android"
+            "only_for_os":"android",
+            "display_unit": "seconds"
         },
         "activity_recognition_on_foot": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity on foot",
             "subfeature": "on_foot",
-            "only_for_os":"android"
+            "only_for_os":"android",
+            "display_unit": "seconds"
         },
         "activity_recognition_on_bicycle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity cycling",
             "subfeature": "on_bicycle",
-            "only_for_os":"android"
+            "only_for_os":"android",
+            "display_unit": "seconds"
         },
         "activity_recognition_in_vehicle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity in vehicle",
             "subfeature": "in_vehicle",
-            "only_for_os":"android"
+            "only_for_os":"android",
+            "display_unit": "seconds"
         },
         "linear_accelerometer": {
                 "sources": [
@@ -147,11 +167,13 @@
                         "source_column":"ABS(double_values_0)+ABS(double_values_1)+ABS(double_values_2)"
                     }
                 ],
-                "display_name": "phone movement"
+            "display_name": "phone movement",
+            "display_unit": "m/s²"
         },
         "sleep": {
             "feature_generator": "SleepFeatureGenerator",
-                "display_name": "sleep amount"
+            "display_name": "sleep amount",
+            "display_unit": "seconds"
         },
         "fatigue_level": {
             "sources": [
@@ -160,7 +182,7 @@
                     "source_column":"fatigue_avg"
                 }
             ],
-                "display_name": "fatigue level"
+            "display_name": "fatigue level"
         },
         "minutes_moderate_fatigue": {
             "sources": [
@@ -170,7 +192,8 @@
                     "reduce_method": "SUM"
                 }
             ],
-            "display_name": "minutes under moderate fatigue"
+            "display_name": "time under moderate fatigue",
+            "display_unit": "minutes"
         },
         "minutes_no_fatigue": {
             "sources": [
@@ -180,7 +203,8 @@
                     "reduce_method": "SUM"
                 }
             ],
-            "display_name": "minutes under no fatigue"
+            "display_name": "time under no fatigue",
+            "display_unit": "minutes"
         },
         "minutes_extreme_fatigue": {
             "sources": [
@@ -190,7 +214,8 @@
                     "reduce_method": "SUM"
                 }
             ],
-            "display_name": "minutes under extreme fatigue"
+            "display_name": "time under extreme fatigue",
+            "display_unit": "minutes"
         },
         "calls_count": {
             "sources": [
@@ -219,7 +244,8 @@
                     "where_clause": "category='Email'"
                 }
             ],
-            "display_name": "Time spent with E-Mail"
+            "display_name": "Time spent with E-Mail",
+            "display_unit": "seconds"
         },
         "time_productivity_level_0": {
             "sources": [
@@ -230,7 +256,8 @@
                     "where_clause": "productivity=0"
                 }
             ],
-            "display_name": "Time spent with productivity 0"
+            "display_name": "Time spent with productivity 0",
+            "display_unit": "seconds"
         }
     }
 }

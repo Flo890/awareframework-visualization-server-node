@@ -66,7 +66,8 @@ router.get('/getallavailables', function(req,res,next) {
             }).map(featureKey => {
                 return {
                     key: featureKey,
-                    display_name: mappingConfig[featureKey].display_name
+                    display_name: mappingConfig[featureKey].display_name,
+                    display_unit: mappingConfig[featureKey].display_unit
                 };
             });
 
