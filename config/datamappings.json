@@ -173,7 +173,7 @@
         "sleep": {
             "feature_generator": "SleepFeatureGenerator",
             "display_name": "sleep amount",
-            "display_unit": "seconds"
+            "display_unit": "hours"
         },
         "fatigue_level": {
             "sources": [
