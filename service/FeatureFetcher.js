@@ -40,6 +40,10 @@ class FeatureFetcher {
                             if (granularityMins < 60 && sources[i].source_table == 'rescuetime_usage_log') {
                                 this.upsampleData(data,granularityMins);
                             }
+                            // weather: if temperature is in Kelvin, convert it to Celsius
+                            if (featureName == 'temperature'){
+                                this.ensureCelsius(data);
+                            }
                             resolveDataFound(data);
                         }
                         resolveSource();
@@ -74,6 +78,14 @@ class FeatureFetcher {
                     data.splice(i+1, 0, newObject);
                     i++;
                 }
+            }
+        }
+    }
+
+    ensureCelsius(data){
+        for(let i = 0; i<data.length; i++){
+            if (data[i].value > 100) {
+                data[i].value -= 273.15;
             }
         }
     }
