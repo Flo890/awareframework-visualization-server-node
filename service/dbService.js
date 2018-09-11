@@ -267,5 +267,30 @@ class DbService {
             });
     }
 
+    /**
+     *
+     * @param deviceId
+     * @param callback  is called with either 'ios' or 'android'
+     */
+    getOsType(deviceId, callback){
+        this.aware_data_connection.query('SELECT * FROM aware_device WHERE device_id=?;',[deviceId], (err,rows) => {
+           if (err) {
+               console.error(err);
+               callback(undefined);
+           }
+           else if (rows.length < 1) {
+               console.error(`could not find aware_device entry for device_id ${deviceId}`);
+               callback(undefined);
+           }
+           else {
+               if (rows[0].board == 'Apple' || rows[0].brand.includes('iPhone') || rows[0].device.includes('iPhone')) {
+                   callback('ios');
+               } else {
+                   callback('android');
+               }
+           }
+        });
+    }
+
 }
 module.exports = DbService;

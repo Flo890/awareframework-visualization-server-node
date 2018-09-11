@@ -40,7 +40,8 @@
             "sources": [
                 {
                     "source_table":"light",
-                    "source_column":"double_light_lux"
+                    "source_column":"double_light_lux",
+                    "only_for_os":"android"
                 }
             ],
                 "display_name": "ambient brightness"
@@ -58,11 +59,13 @@
             "sources": [
                 {
                     "source_table":"plugin_studentlife_audio",
-                    "source_column":"double_energy"
+                    "source_column":"double_energy",
+                    "only_for_os":"ios (does not work)"
                 },
                 {
                     "source_table":"plugin_studentlife_audio_android",
-                    "source_column":"double_energy"
+                    "source_column":"double_energy",
+                    "only_for_os":"android"
                 }
             ],
                 "display_name": "ambient noise (studentlife)"
@@ -70,14 +73,16 @@
         "time_in_conversation": {
             "sources": [
                 {
-                 "source_table": "plugin_studentlife_audio",
-                "sql_selector":"SUM(4) as value",
-                    "where_clause": "inference=2"
-            },
+                    "source_table": "plugin_studentlife_audio",
+                    "sql_selector":"SUM(4) as value",
+                    "where_clause": "inference=2",
+                    "only_for_os":"ios (does not work)"
+                },
                 {
                     "source_table": "plugin_studentlife_audio_android",
                     "sql_selector":"SUM(4) as value",
-                    "where_clause": "inference=2"
+                    "where_clause": "inference=2",
+                    "only_for_os":"android"
                 }],
                 "display_name": "time spent in conversation"
         },
@@ -86,12 +91,14 @@
                 {
                     "source_table": "plugin_studentlife_audio",
                     "sql_selector":"SUM(4) as value",
-                    "where_clause": "inference=1"
+                    "where_clause": "inference=1",
+                    "only_for_os":"ios (does not work)"
                 },
                 {
                     "source_table": "plugin_studentlife_audio_android",
                     "sql_selector":"SUM(4) as value",
-                    "where_clause": "inference=1"
+                    "where_clause": "inference=1",
+                    "only_for_os":"android"
                 }],
             "display_name": "time spent in noisy environment"
         },
@@ -111,23 +118,27 @@
         },
         "activity_recognition_still": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
-                "display_name": "activity still",
-                "subfeature": "still"
+            "display_name": "activity still",
+            "subfeature": "still",
+            "only_for_os":"android"
         },
         "activity_recognition_on_foot": {
-                "feature_generator": "ActivityRecognitionFeatureGenerator",
-                "display_name": "activity on foot",
-                "subfeature": "on_foot"
+            "feature_generator": "ActivityRecognitionFeatureGenerator",
+            "display_name": "activity on foot",
+            "subfeature": "on_foot",
+            "only_for_os":"android"
         },
         "activity_recognition_on_bicycle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity cycling",
-            "subfeature": "on_bicycle"
+            "subfeature": "on_bicycle",
+            "only_for_os":"android"
         },
         "activity_recognition_in_vehicle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity in vehicle",
-            "subfeature": "in_vehicle"
+            "subfeature": "in_vehicle",
+            "only_for_os":"android"
         },
         "linear_accelerometer": {
                 "sources": [
