@@ -12,7 +12,7 @@ class FeatureFetcher {
 
             if(this.datamappings.mappings[featureName].sources) {
                 // is a usual feature
-                this.getUsualFeature(featureName, (featureName == 'fatigue_level' ? email : deviceId), from, to, granularityMins, dataCb)
+                this.getUsualFeature(featureName, deviceId, email, from, to, granularityMins, dataCb)
             }
 
             else if(this.datamappings.mappings[featureName].feature_generator){
@@ -23,7 +23,7 @@ class FeatureFetcher {
         });
     }
 
-    getUsualFeature(featureName, deviceId, from, to, granularityMins, dataCb){
+    getUsualFeature(featureName, deviceId, email, from, to, granularityMins, dataCb){
         let sources = this.datamappings.mappings[featureName].sources;
         // TODO helpful message if no matching mapping is set
 
@@ -32,7 +32,8 @@ class FeatureFetcher {
             let sourcePromises = []; // when all source promises are done, we know that we have the final result. If now there's new data in the outer promise, we can return []
             for(let i = 0; i<sources.length; i++) {
                 sourcePromises.push(new Promise((resolveSource, rejectSource) => {
-                    this.dbService.queryForAccumulatedData(sources[i], deviceId, from, to, granularityMins, data => {
+                    let deviceIdOrEmail = sources[i].source_table == 'performetric_fatigue_report' ? email : deviceId;
+                    this.dbService.queryForAccumulatedData(sources[i], deviceIdOrEmail, from, to, granularityMins, data => {
                         if (data && data.length > 0) {
                             // TODO another bad architecture thing
                             // RescueTime data is hourly, so we have to upsample it if granularity is higher than 60 minutes
