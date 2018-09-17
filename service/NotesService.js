@@ -6,12 +6,12 @@ class NotesService {
         this.dbService = new DbService();
     }
 
-    getAllTimelineNotesForParticipant(participantId, callback){
-        this.dbService.getNotes(participantId, 'TIMELINE', callback);
+    getAllNotesForParticipant(participantId, type, callback){
+        this.dbService.getNotes(participantId, type, callback);
     }
 
-    saveTimelineNote(participantId, noteText, timelineConfig, callback){
-        this.dbService.saveNote(participantId, 'TIMELINE', noteText, timelineConfig, callback);
+    saveTimelineNote(participantId, noteText, timelineConfig, type, callback){
+        this.dbService.saveTimelineNote(participantId, type, noteText, timelineConfig, callback);
     }
 
 }

@@ -201,7 +201,7 @@ class DbService {
         });
     }
 
-    saveNote(participantId, visualization, noteText, timelineConfig, callback){
+    saveTimelineNote(participantId, visualization, noteText, timelineConfig, callback){
         this.meta_connection.query(`INSERT INTO notes (participant_id, visualization, note_text, timeline_config) VALUES (?,?,?,?)`,[participantId, visualization, noteText, timelineConfig],(error,rows) => {
             if (error) console.error(error);
             callback(rows.affectedRows == 1 ? true : false);

@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS study_participants(
 
 CREATE TABLE IF NOT EXISTS notes(
   _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  visualization ENUM('TIMELINE') NOT NULL,
+  visualization ENUM('TIMELINE','TIMESEGMENT') NOT NULL,
   participant_id INT NOT NULL REFERENCES study_participants(participant_id),
   note_text TEXT NOT NULL,
   timeline_config TEXT NOT NULL,
