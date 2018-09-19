@@ -2,26 +2,87 @@ let pcorr = require('compute-pcorr');
 let FeatureFetcher = require('./FeatureFetcher');
 let featureFetcher = new FeatureFetcher();
 var jStat = require('jStat').jStat;
+let DbService = require('./dbService');
+let dbService = new DbService();
 
 const SIGNIFICANCE_THRESHOLD = 0.05;
+const featureMappings = require('../config/datamappings.json').mappings;
+const notInfluencableDomains = ['weather','environment']; // does not include outcome domains, albeit they are not influencable as well
+
+const participantId = 3;
+const from = 1536530400000;
+const to = 1536945000000;
 
 /**
  * computes Natural Language Correlations as proposed by Bentley et al: https://dl.acm.org/citation.cfm?id=2503823
  */
 class CorrelationDetectionService {
 
-    async testComputeCorrelations(){
-        let results = await this.doComputeCorrelations(1,'Florian.Bemmann@campus.lmu.de',1535061600000,1535148000000,60);
+    corrFilterFn(featureOne, featureTwo){
+        // filter out...
+        // ... correlations within one domain, except action
+        if (featureMappings[featureOne].domain == featureMappings[featureTwo].domain && !(featureMappings[featureOne].domain == 'action')) {
+            return false;
+        }
+        // ... correlation between 2 not influencable domains
+        if (notInfluencableDomains.includes(featureMappings[featureOne].domain) && notInfluencableDomains.includes(featureMappings[featureTwo].domain)) {
+            return false;
+        }
+        return true;
+    }
 
-        console.log('----------------------');
-        results.forEach(result => {
-           if (result.isSignificant){
-               console.log(`significant ${result.correlationCoefficient > 0 ? 'positive' : 'negative'} correlation for ${result.featureOne} and ${result.featureTwo} found [cc:${result.correlationCoefficient}, p:${result.pValue}, n:${result.n}]`)
-           }
+    async computeCorrelations() {
+
+        let results = await this.doComputeCorrelationsTypeOne(participantId, 'Florian.Bemmann@campus.lmu.de', from, to, 60, this.corrFilterFn);
+
+        let correlations = results
+            .filter(result => result.isSignificant); // filter out insignificant correlations
+
+
+
+        // build sentences
+        correlations.forEach(correlation => {
+            let nlc = this.buildSentence(correlation.featureOne, correlation.featureTwo, correlation.correlationCoefficient, correlation.pValue);
+            dbService.saveNlCorrelation({
+                ...correlation,
+                domainOne: featureMappings[correlation.featureOne].domain,
+                domainTwo: featureMappings[correlation.featureTwo].domain,
+                sentence: nlc,
+                from: from,
+                to: to
+            },
+                participantId
+            ,()=> {
+                console.log(nlc);
+            })
+
         });
     }
 
-    async doComputeCorrelations(participantId, participantEmail, from, to, granularityMins){
+    async testComputeCorrelations(){
+        this.computeCorrelations();
+        // let results = await this.doComputeCorrelationsTypeOne(3,'Florian.Bemmann@campus.lmu.de',1536530400000,1536945000000,60);
+        //
+        // console.log('----------------------');
+        // results.forEach(result => {
+        //    if (result.isSignificant){
+        //        console.log(`significant ${result.correlationCoefficient > 0 ? 'positive' : 'negative'} correlation for ${result.featureOne} and ${result.featureTwo} found [cc:${result.correlationCoefficient}, p:${result.pValue}, n:${result.n}]`)
+        //    }
+        // });
+    }
+
+    /**
+     * computes the type of correlations from Health Mashups paper, that are described as "significant observations based
+     * on statistically significant Pearson correlations between sensors (p < 0.05)"
+     * Significance is not incorporated in this function!
+     * @param participantId
+     * @param participantEmail
+     * @param from
+     * @param to
+     * @param granularityMins
+     * @return {Promise<*[]>}
+     */
+    async doComputeCorrelationsTypeOne(participantId, participantEmail, from, to, granularityMins, corrFilterFn){
         let mappings = require('../config/datamappings.json').mappings;
         let featureNames = Object.keys(mappings);
 
@@ -33,6 +94,7 @@ class CorrelationDetectionService {
                 let featureTwo = featureNames[j];
 
                 if (i>=j) continue; // skip the second halve of the diagonal-cut feature matrix => avoid duplicate calculations
+                if (!corrFilterFn(featureOne, featureTwo)) continue; // filter out correlations that aren't useful here (e.g. temperature to humidity)
 
                 results.push(await new Promise(resolve => {
                     featureFetcher.getFeature(participantId, participantEmail, featureOne, from, to, granularityMins, f1Data => {
@@ -130,6 +192,34 @@ class CorrelationDetectionService {
                 break;
         }
         callback(array1,array2);
+    }
+
+    buildSentence(featureOne, featureTwo, correlationCoefficient, pValue){
+
+        // it makes more sense to have "you are more tired when temperature is high" instead of "temperature is higher when you are more tired"
+        let switchFeatures = notInfluencableDomains.includes(featureMappings[featureOne].domain) || featureMappings[featureTwo].domain == 'fatigue';
+        let featureTemp = featureOne;
+        featureOne = featureTwo;
+        featureTwo = featureTemp;
+
+        let orderAdjective = correlationCoefficient > 0 ? 'more' : 'less';
+        let featureOneVerb = featureMappings[featureOne].correlation_verb;
+        let featureTwoVerb = featureMappings[featureTwo].correlation_verb;
+        let strengthAdjective = '';
+        if (pValue > 0.04) {
+            strengthAdjective = 'probably';
+        } else if (pValue > 0.02) {
+            strengthAdjective = 'likely';
+        } else {
+            strengthAdjective = 'most likely';
+        }
+
+        return `${featureOne.includes('is') ? '' : 'You'} ${strengthAdjective} ${featureOneVerb} ${orderAdjective} on days where ${featureTwoVerb.includes('is') ? '' : 'you'} ${featureTwoVerb}`;
+    }
+
+    // --------- client methods ---------
+    getCorrelations(participantId, cb){
+        dbService.getCorrelationsForUser(participantId, from, to ,100000, cb);
     }
 
 }

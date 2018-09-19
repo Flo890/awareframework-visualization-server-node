@@ -34,3 +34,19 @@ CREATE TABLE IF NOT EXISTS dashboard_configs (
   updated_at DATETIME NOT NULL DEFAULT NOW(),
   UNIQUE(participant_id, config_key)
 );
+
+CREATE TABLE  nl_correlations (
+  _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  participant_id INT NOT NULL REFERENCES study_participants(participant_id),
+  feature_one VARCHAR(255) NOT NULL,
+  feature_two VARCHAR(255) NOT NULL,
+  domain_one VARCHAR(255) NOT NULL,
+  domain_two VARCHAR(255) NOT NULL,
+  `from` BIGINT NOT NULL,
+  `to` BIGINT NOT NULL,
+  p_value FLOAT NOT NULL,
+  correlation_coefficient FLOAT NOT NULL,
+  sentence TEXT NOT NULL,
+  updated_at DATETIME NOT NULL DEFAULT NOW(),
+  UNIQUE (participant_id, feature_one, feature_two, `from`, `to`)
+);

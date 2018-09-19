@@ -9,7 +9,9 @@
                 }
             ],
             "display_name": "outside temperature",
-            "display_unit": "°C"
+            "display_unit": "°C",
+            "domain": "weather",
+            "correlation_verb": "it is warmer outside"
         },
         "pressure": {
             "sources": [
@@ -20,7 +22,9 @@
                 }
             ],
             "display_name": "air pressure",
-            "display_unit": "hPa"
+            "display_unit": "hPa",
+            "domain": "weather",
+            "correlation_verb": "air pressure is high"
         },
         "humidity": {
             "sources": [
@@ -31,7 +35,9 @@
                 }
             ],
             "display_name": "humidity",
-            "display_unit": "%"
+            "display_unit": "%",
+            "domain": "weather",
+            "correlation_verb": "air humidity is high"
         },
         "cloudiness": {
             "sources": [
@@ -41,7 +47,9 @@
                 }
             ],
             "display_name": "cloudiness",
-            "display_unit": "%"
+            "display_unit": "%",
+            "domain": "weather",
+            "correlation_verb": "it is cloudy"
         },
         "ambient_brightness": {
             "sources": [
@@ -52,7 +60,9 @@
                 }
             ],
             "display_name": "ambient brightness",
-            "display_unit": "lux"
+            "display_unit": "lux",
+            "domain": "environment",
+            "correlation_verb": "are in bright environment"
         },
         "ambient_noise_plugin": {
             "sources": [
@@ -62,7 +72,9 @@
                 }
             ],
             "display_name": "ambient noise (plugin)",
-            "display_unit": "dB"
+            "display_unit": "dB",
+            "domain": "environment",
+            "correlation_verb": "are in louder environment"
         },
         "ambient_noise_studentlife": {
             "sources": [
@@ -77,7 +89,9 @@
                     "only_for_os":"android"
                 }
             ],
-            "display_name": "ambient noise (studentlife)"
+            "display_name": "ambient noise (studentlife)",
+            "domain": "environment",
+            "correlation_verb": "are in louder environment"
         },
         "time_in_conversation": {
             "sources": [
@@ -95,7 +109,9 @@
                 }
             ],
             "display_name": "time spent in conversation",
-            "display_unit": "minutes"
+            "display_unit": "minutes",
+            "domain": "environment",
+            "correlation_verb": "spend more time in conversation"
         },
         "time_in_noise": {
             "sources": [
@@ -113,52 +129,68 @@
                 }
             ],
             "display_name": "time spent in noisy environment",
-            "display_unit": "minutes"
+            "display_unit": "minutes",
+            "domain": "environment",
+            "correlation_verb": "spend more time in noisy environment"
         },
         "phone_usage": {
             "feature_generator": "PhoneUsageFeatureGenerator",
             "display_name": "phone usage",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "use your phone more"
         },
         "time_at_home_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
             "display_name": "time at home",
             "subfeature": "home",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "environment",
+            "correlation_verb": "spend more time at home"
         },
         "time_at_work_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
             "display_name": "time at work",
             "subfeature": "work",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "environment",
+            "correlation_verb": "spend more time at work"
         },
         "activity_recognition_still": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity still",
             "subfeature": "still",
             "only_for_os":"android",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "move less"
         },
         "activity_recognition_on_foot": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity on foot",
             "subfeature": "on_foot",
             "only_for_os":"android",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "walk"
         },
         "activity_recognition_on_bicycle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity cycling",
             "subfeature": "on_bicycle",
             "only_for_os":"android",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "ride your bicycle"
         },
         "activity_recognition_in_vehicle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
             "display_name": "activity in vehicle",
             "subfeature": "in_vehicle",
             "only_for_os":"android",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "ride in vehicle"
         },
         "linear_accelerometer": {
                 "sources": [
@@ -168,12 +200,16 @@
                     }
                 ],
             "display_name": "phone movement",
-            "display_unit": "m/s²"
+            "display_unit": "m/s²",
+            "domain": "action",
+            "correlation_verb": "move your phone"
         },
         "sleep": {
             "feature_generator": "SleepFeatureGenerator",
             "display_name": "sleep amount",
-            "display_unit": "hours"
+            "display_unit": "hours",
+            "domain": "action",
+            "correlation_verb": "sleep"
         },
         "fatigue_level": {
             "sources": [
@@ -182,7 +218,9 @@
                     "source_column":"fatigue_avg"
                 }
             ],
-            "display_name": "fatigue level"
+            "display_name": "fatigue level",
+            "domain": "fatigue",
+            "correlation_verb": "have higher fatigue level"
         },
         "minutes_moderate_fatigue": {
             "sources": [
@@ -193,7 +231,9 @@
                 }
             ],
             "display_name": "time under moderate fatigue",
-            "display_unit": "minutes"
+            "display_unit": "minutes",
+            "domain": "fatigue",
+            "correlation_verb": "spend more time under moderate fatigue"
         },
         "minutes_no_fatigue": {
             "sources": [
@@ -204,7 +244,9 @@
                 }
             ],
             "display_name": "time under no fatigue",
-            "display_unit": "minutes"
+            "display_unit": "minutes",
+            "domain": "fatigue",
+            "correlation_verb": "spend more time under no fatigue"
         },
         "minutes_extreme_fatigue": {
             "sources": [
@@ -215,7 +257,9 @@
                 }
             ],
             "display_name": "time under extreme fatigue",
-            "display_unit": "minutes"
+            "display_unit": "minutes",
+            "domain": "fatigue",
+            "correlation_verb": "spend more time under extreme fatigue"
         },
         "calls_count": {
             "sources": [
@@ -224,7 +268,9 @@
                     "sql_selector":"count(*) as value"
                 }
             ],
-            "display_name":"amount of calls"
+            "display_name":"amount of calls",
+            "domain": "action",
+            "correlation_verb": "make calls"
         },
         "calls_minutes": {
             "sources": [
@@ -233,7 +279,9 @@
                     "sql_selector":"SUM(call_duration) as value"
                 }
             ],
-            "display_name":"amount calls done or answered"
+            "display_name":"amount calls done or answered",
+            "domain": "action",
+            "correlation_verb": "spend more time with calls"
         },
         "time_email": {
             "sources": [
@@ -245,7 +293,9 @@
                 }
             ],
             "display_name": "Time spent with E-Mail",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "spend time emailing"
         },
         "time_productivity_level_0": {
             "sources": [
@@ -257,7 +307,9 @@
                 }
             ],
             "display_name": "Time spent with productivity 0",
-            "display_unit": "seconds"
+            "display_unit": "seconds",
+            "domain": "action",
+            "correlation_verb": "spend time with unproductive tasks"
         }
     }
 }

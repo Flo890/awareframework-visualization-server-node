@@ -44,6 +44,7 @@ app.use('/notes', [auth.ensureAuthenticated, require('./routes/notes')]);
 app.use('/descriptivestatistics', [auth.ensureAuthenticated, require('./routes/descriptivestatistics')]);
 app.use('/rescuetime', [auth.ensureAuthenticated, require('./routes/rescuetime')]);
 app.use('/dashboardconfig', [auth.ensureAuthenticated, require('./routes/dashboardconfig')]);
+app.use('/correlations', [auth.ensureAuthenticated, require('./routes/correlationdetection')])
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

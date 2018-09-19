@@ -294,5 +294,66 @@ class DbService {
         });
     }
 
+    saveNlCorrelation(correlation, participantId, cb){
+        this.meta_connection.query(
+            'INSERT INTO nl_correlations ' +
+            '(participant_id,feature_one,feature_two,domain_one,domain_two,`from`,`to`,p_value,correlation_coefficient,sentence)' +
+            'VALUES(?,?,?,?,?,?,?,?,?,?) ' +
+            ' ON DUPLICATE KEY UPDATE p_value=?, correlation_coefficient=?, sentence=?, updated_at=NOW();',
+            [
+                participantId,
+                correlation.featureOne,
+                correlation.featureTwo,
+                correlation.domainOne,
+                correlation.domainTwo,
+                correlation.from,
+                correlation.to,
+                correlation.pValue,
+                correlation.correlationCoefficient,
+                correlation.sentence,
+                correlation.pValue,
+                correlation.correlationCoefficient,
+                correlation.sentence
+            ],
+            (err,rows) => {
+                if (err) console.error('saving correlation failed',err);
+                cb();
+            }
+        );
+    }
+
+    /**
+     *
+     * @param participantId
+     * @param from may be null
+     * @param to may be null
+     * @param topN may be null
+     * @param cb
+     */
+    getCorrelationsForUser(participantId, from, to, topN, cb){
+        let whereClause = '';
+        if (from) {
+            whereClause += ` AND \`from\`=${from}`;
+        }
+        if (to) {
+            whereClause += ` AND \`to\`=${to}`;
+        }
+        let limitClause = '';
+        if (topN) {
+            limitClause += ` LIMIT ${topN}`;
+        }
+        this.meta_connection.query(`SELECT * FROM nl_correlations WHERE participant_id=? ${whereClause} ORDER BY p_value ASC ${limitClause};`,
+            [participantId],
+            (err,rows) => {
+                if (err) {
+                    console.error(`fetching correlations for participant ${participantId} failed`,err);
+                    cb([]);
+                }
+                else {
+                    cb(rows);
+                }
+        });
+    }
+
 }
 module.exports = DbService;
