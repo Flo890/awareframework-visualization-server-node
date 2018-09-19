@@ -50,3 +50,13 @@ CREATE TABLE  nl_correlations (
   updated_at DATETIME NOT NULL DEFAULT NOW(),
   UNIQUE (participant_id, feature_one, feature_two, `from`, `to`)
 );
+
+CREATE TABLE nl_correlations_hide_rules (
+  _id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  participant_id INT NOT NULL REFERENCES study_participants(participant_id),
+  correlation_id INT NULL DEFAULT NULL REFERENCES nl_correlations(_id),
+  feature VARCHAR(255) NULL DEFAULT NULL,
+  updated_at DATETIME NOT NULL DEFAULT NOW(),
+  UNIQUE(participant_id,correlation_id),
+  UNIQUE(participant_id,feature)
+);

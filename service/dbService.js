@@ -342,7 +342,16 @@ class DbService {
         if (topN) {
             limitClause += ` LIMIT ${topN}`;
         }
-        this.meta_connection.query(`SELECT * FROM nl_correlations WHERE participant_id=? ${whereClause} ORDER BY p_value ASC ${limitClause};`,
+        this.meta_connection.query(
+            `SELECT * FROM nl_correlations 
+            WHERE participant_id=? ${whereClause} 
+            AND NOT EXISTS (
+               SELECT * FROM nl_correlations_hide_rules 
+               WHERE nl_correlations_hide_rules.correlation_id=nl_correlations._id 
+               OR nl_correlations_hide_rules.feature=nl_correlations.feature_one
+               OR nl_correlations_hide_rules.feature=nl_correlations.feature_two
+            )
+            ORDER BY p_value ASC ${limitClause};`,
             [participantId],
             (err,rows) => {
                 if (err) {
@@ -354,6 +363,28 @@ class DbService {
                 }
         });
     }
+
+    insertHideCorrelationById(correlationId, participantId, cb){
+        this.meta_connection.query('INSERT INTO nl_correlations_hide_rules ' +
+            '(participant_id,correlation_id) VALUES(?,?) ON DUPLICATE KEY UPDATE updated_at=NOW();',
+            [participantId, correlationId],
+            (err,rows) => {
+                if (err) console.error(`inserting correlation hide by id failed for participant ${participantId} / correlation ${correlationId}`,err);
+                cb();
+            });
+    }
+
+    insertHideCorrelationByFeature(feature, participantId, cb){
+        this.meta_connection.query('INSERT INTO nl_correlations_hide_rules ' +
+            '(participant_id,feature) VALUES(?,?) ON DUPLICATE KEY UPDATE updated_at=NOW();',
+            [participantId, feature],
+            (err,rows) => {
+                if (err) console.error(`inserting correlation hide by id failed for participant ${participantId} / feature ${feature}`,err);
+                cb();
+            });
+    }
+
+
 
 }
 module.exports = DbService;

@@ -222,5 +222,13 @@ class CorrelationDetectionService {
         dbService.getCorrelationsForUser(participantId, from, to ,100000, cb);
     }
 
+    addHideCorrelationById(correlationId, participantId, cb){
+        dbService.insertHideCorrelationById(correlationId, participantId, cb);
+    }
+
+    addHideCorrelationByFeature(feature, participantId, cb){
+        dbService.insertHideCorrelationByFeature(feature, participantId, cb);
+    }
+
 }
 module.exports = CorrelationDetectionService;

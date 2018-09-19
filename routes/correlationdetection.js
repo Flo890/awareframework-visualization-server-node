@@ -11,4 +11,20 @@ router.get('/',(req,res,next) => {
     });
 });
 
+router.post('/hide',(req,res,next) => {
+    // one of both is set:
+   let hideId = req.body.correlationId;
+   let hideFeature = req.body.feature;
+
+   if (hideId) {
+       correlationDetectionService.addHideCorrelationById(hideId, req.user.participant_id, () => {res.status(200).send()});
+   }
+   else if (hideFeature) {
+        correlationDetectionService.addHideCorrelationByFeature(hideFeature, req.user.participant_id, () => {res.status(200).send()});
+   }
+   else {
+       res.status(400).send();
+   }
+});
+
 module.exports = router;
