@@ -38,7 +38,7 @@ class DescrStateService {
             }
             else if (dataMapping.feature_generator) {
                 // is special feature
-                let granularityMins = 0;
+                let granularityMins = 10;
                 this.featureFetcher.getGeneratedFeature(config.featureName, deviceId, config.from, config.to, granularityMins, data => {
                     // here the accumulation/selection has to be done manually :(
                     let accumulationMethod = this.accumulatorToFnMapping[config.accumulator.function];

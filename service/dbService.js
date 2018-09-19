@@ -38,6 +38,8 @@ class DbService {
 
         Promise.all([awareDbConnectPromise, metaDbConnectPromise]).then(() => {
             if (callback) callback();
+        }).catch(error => {
+            console.error(`connecting to db failed`, error);
         });
     };
 
