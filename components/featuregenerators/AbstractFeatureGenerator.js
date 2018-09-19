@@ -42,7 +42,8 @@ class AbstractFeatureGenerator {
             let timestampBinned = hourTimestampFloored + (binInHour * granularityMins * 60 *1000);
             return timestampBinned;//dateformat = 'D_M_YYYY-H_m';
         }
-        return moment(moment(timestamp).format(dateformat),dateformat).unix()*1000;
+        let timezoneOffset = 7200;
+        return (moment(moment.unix((timestamp/1000)).format(dateformat),dateformat).local().unix()+timezoneOffset)*1000;
     }
 
 
