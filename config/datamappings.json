@@ -136,7 +136,8 @@
         "phone_usage": {
             "feature_generator": "PhoneUsageFeatureGenerator",
             "display_name": "phone usage",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-phone",
             "correlation_verb": "use your phone more"
         },
@@ -144,7 +145,8 @@
             "feature_generator": "HomeWorkTimeFeatureGenerator",
             "display_name": "time at home",
             "subfeature": "home",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "environment",
             "correlation_verb": "spend more time at home"
         },
@@ -152,7 +154,8 @@
             "feature_generator": "HomeWorkTimeFeatureGenerator",
             "display_name": "time at work",
             "subfeature": "work",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "environment",
             "correlation_verb": "spend more time at work"
         },
@@ -161,7 +164,8 @@
             "display_name": "activity still",
             "subfeature": "still",
             "only_for_os":"android",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-self",
             "correlation_verb": "move less"
         },
@@ -170,7 +174,8 @@
             "display_name": "activity on foot",
             "subfeature": "on_foot",
             "only_for_os":"android",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-self",
             "correlation_verb": "walk"
         },
@@ -179,7 +184,8 @@
             "display_name": "activity cycling",
             "subfeature": "on_bicycle",
             "only_for_os":"android",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-self",
             "correlation_verb": "ride your bicycle"
         },
@@ -188,7 +194,8 @@
             "display_name": "activity in vehicle",
             "subfeature": "in_vehicle",
             "only_for_os":"android",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-self",
             "correlation_verb": "ride in vehicle"
         },
@@ -293,7 +300,8 @@
                 }
             ],
             "display_name": "Time spent with E-Mail",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-work",
             "correlation_verb": "spend time emailing"
         },
@@ -307,7 +315,8 @@
                 }
             ],
             "display_name": "Time spent with productivity 0",
-            "display_unit": "seconds",
+            "display_unit": "minutes",
+            "divisor": 60,
             "domain": "action-work",
             "correlation_verb": "spend time with unproductive tasks"
         }

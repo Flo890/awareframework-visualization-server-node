@@ -10,14 +10,23 @@ class FeatureFetcher {
     getFeature(participantId, email, featureName, from, to, granularityMins, dataCb){
         this.dbService.getDeviceIdForParticipantId(participantId, deviceId => {
 
+            let intermediateCb = data => {
+                if (this.datamappings.mappings[featureName].divisor) {
+                   for(let i=0; i<data.length; i++){
+                        data[i].value = data[i].value/this.datamappings.mappings[featureName].divisor;
+                   }
+                }
+                dataCb(data);
+            };
+
             if(this.datamappings.mappings[featureName].sources) {
                 // is a usual feature
-                this.getUsualFeature(featureName, deviceId, email, from, to, granularityMins, dataCb)
+                this.getUsualFeature(featureName, deviceId, email, from, to, granularityMins, intermediateCb)
             }
 
             else if(this.datamappings.mappings[featureName].feature_generator){
                 // is special feature with generator class
-                this.getGeneratedFeature(featureName, deviceId, from, to, granularityMins, dataCb);
+                this.getGeneratedFeature(featureName, deviceId, from, to, granularityMins, intermediateCb);
             }
 
         });
@@ -44,6 +53,7 @@ class FeatureFetcher {
                             if (featureName == 'temperature'){
                                 this.ensureCelsius(data);
                             }
+
                             resolveDataFound(data);
                         }
                         resolveSource();
