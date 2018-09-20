@@ -110,7 +110,7 @@
             ],
             "display_name": "time spent in conversation",
             "display_unit": "minutes",
-            "domain": "environment",
+            "domain": "action-work",
             "correlation_verb": "spend more time in conversation"
         },
         "time_in_noise": {
@@ -137,7 +137,7 @@
             "feature_generator": "PhoneUsageFeatureGenerator",
             "display_name": "phone usage",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-phone",
             "correlation_verb": "use your phone more"
         },
         "time_at_home_by_wifi": {
@@ -162,7 +162,7 @@
             "subfeature": "still",
             "only_for_os":"android",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-self",
             "correlation_verb": "move less"
         },
         "activity_recognition_on_foot": {
@@ -171,7 +171,7 @@
             "subfeature": "on_foot",
             "only_for_os":"android",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-self",
             "correlation_verb": "walk"
         },
         "activity_recognition_on_bicycle": {
@@ -180,7 +180,7 @@
             "subfeature": "on_bicycle",
             "only_for_os":"android",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-self",
             "correlation_verb": "ride your bicycle"
         },
         "activity_recognition_in_vehicle": {
@@ -189,7 +189,7 @@
             "subfeature": "in_vehicle",
             "only_for_os":"android",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-self",
             "correlation_verb": "ride in vehicle"
         },
         "linear_accelerometer": {
@@ -201,14 +201,14 @@
                 ],
             "display_name": "phone movement",
             "display_unit": "m/s²",
-            "domain": "action",
+            "domain": "action-phone",
             "correlation_verb": "move your phone"
         },
         "sleep": {
             "feature_generator": "SleepFeatureGenerator",
             "display_name": "sleep amount",
             "display_unit": "hours",
-            "domain": "action",
+            "domain": "action-self",
             "correlation_verb": "sleep"
         },
         "fatigue_level": {
@@ -269,7 +269,7 @@
                 }
             ],
             "display_name":"amount of calls",
-            "domain": "action",
+            "domain": "action-phone",
             "correlation_verb": "make calls"
         },
         "calls_minutes": {
@@ -280,7 +280,7 @@
                 }
             ],
             "display_name":"amount calls done or answered",
-            "domain": "action",
+            "domain": "action-phone",
             "correlation_verb": "spend more time with calls"
         },
         "time_email": {
@@ -294,7 +294,7 @@
             ],
             "display_name": "Time spent with E-Mail",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-work",
             "correlation_verb": "spend time emailing"
         },
         "time_productivity_level_0": {
@@ -308,7 +308,7 @@
             ],
             "display_name": "Time spent with productivity 0",
             "display_unit": "seconds",
-            "domain": "action",
+            "domain": "action-work",
             "correlation_verb": "spend time with unproductive tasks"
         }
     }

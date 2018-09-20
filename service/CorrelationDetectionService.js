@@ -9,6 +9,7 @@ const SIGNIFICANCE_THRESHOLD = 0.05;
 const featureMappings = require('../config/datamappings.json').mappings;
 const notInfluencableDomains = ['weather','environment']; // does not include outcome domains, albeit they are not influencable as well
 
+
 const participantId = 3;
 const from = 1536530400000;
 const to = 1536945000000;
@@ -21,7 +22,7 @@ class CorrelationDetectionService {
     corrFilterFn(featureOne, featureTwo){
         // filter out...
         // ... correlations within one domain, except action
-        if (featureMappings[featureOne].domain == featureMappings[featureTwo].domain && !(featureMappings[featureOne].domain == 'action')) {
+        if (featureMappings[featureOne].domain == featureMappings[featureTwo].domain && !(featureMappings[featureOne].domain == 'action-work')) {
             return false;
         }
         // ... correlation between 2 not influencable domains
@@ -36,21 +37,35 @@ class CorrelationDetectionService {
         let results = await this.doComputeCorrelationsTypeOne(participantId, 'Florian.Bemmann@campus.lmu.de', from, to, 60, this.corrFilterFn);
 
         let correlations = results
-            .filter(result => result.isSignificant); // filter out insignificant correlations
-
+            .filter(result => result.isSignificant); // filter out insignificant correlation
 
 
         // build sentences
         correlations.forEach(correlation => {
             let nlc = this.buildSentence(correlation.featureOne, correlation.featureTwo, correlation.correlationCoefficient, correlation.pValue);
-            dbService.saveNlCorrelation({
+            let correlationEnriched = {
                 ...correlation,
                 domainOne: featureMappings[correlation.featureOne].domain,
                 domainTwo: featureMappings[correlation.featureTwo].domain,
                 sentence: nlc,
                 from: from,
                 to: to
-            },
+            }
+
+            let relevanceScore = 0;
+            if (correlationEnriched.domainOne == 'fatigue') {
+                relevanceScore = 100;
+            }
+            else if (correlationEnriched.domainOne == 'action-work') {
+                relevanceScore = 80;
+            }
+            if (correlationEnriched.domainTwo == 'action-self' || correlationEnriched.domainTwo == 'action-phone') {
+                relevanceScore += 10;
+            }
+            correlationEnriched.relevanceScore = relevanceScore;
+
+            dbService.saveNlCorrelation(
+                correlationEnriched,
                 participantId
             ,()=> {
                 console.log(nlc);
@@ -194,13 +209,19 @@ class CorrelationDetectionService {
         callback(array1,array2);
     }
 
-    buildSentence(featureOne, featureTwo, correlationCoefficient, pValue){
+    buildSentence(featureOne, featureTwo, correlationCoefficient, pValue) {
 
         // it makes more sense to have "you are more tired when temperature is high" instead of "temperature is higher when you are more tired"
-        let switchFeatures = notInfluencableDomains.includes(featureMappings[featureOne].domain) || featureMappings[featureTwo].domain == 'fatigue';
-        let featureTemp = featureOne;
-        featureOne = featureTwo;
-        featureTwo = featureTemp;
+        let switchFeatures =
+            notInfluencableDomains.includes(featureMappings[featureOne].domain)
+            || featureMappings[featureTwo].domain == 'fatigue'
+            || (featureMappings[featureOne].domain != 'fatigue' && featureMappings[featureTwo].domain == 'action-work');
+
+        if (switchFeatures) {
+            let featureTemp = featureOne;
+            featureOne = featureTwo;
+            featureTwo = featureTemp;
+        }
 
         let orderAdjective = correlationCoefficient > 0 ? 'more' : 'less';
         let featureOneVerb = featureMappings[featureOne].correlation_verb;
@@ -219,7 +240,17 @@ class CorrelationDetectionService {
 
     // --------- client methods ---------
     getCorrelations(participantId, cb){
-        dbService.getCorrelationsForUser(participantId, from, to ,100000, cb);
+        dbService.getCorrelationsForUser(participantId, from, to ,100000, correlations => {
+            let ratedCorrelations = correlations.sort((c1,c2) => {
+
+            });
+            correlations.forEach(c => {
+               if (c.domain_one == 'fatigue') {
+                   c.relevance = 100;
+               } // TODO
+            });
+            cb(ratedCorrelations);
+        });
     }
 
     addHideCorrelationById(correlationId, participantId, cb){

@@ -297,9 +297,9 @@ class DbService {
     saveNlCorrelation(correlation, participantId, cb){
         this.meta_connection.query(
             'INSERT INTO nl_correlations ' +
-            '(participant_id,feature_one,feature_two,domain_one,domain_two,`from`,`to`,p_value,correlation_coefficient,sentence)' +
-            'VALUES(?,?,?,?,?,?,?,?,?,?) ' +
-            ' ON DUPLICATE KEY UPDATE p_value=?, correlation_coefficient=?, sentence=?, updated_at=NOW();',
+            '(participant_id,feature_one,feature_two,domain_one,domain_two,`from`,`to`,p_value,correlation_coefficient,sentence,relevance_score)' +
+            'VALUES(?,?,?,?,?,?,?,?,?,?,?) ' +
+            ' ON DUPLICATE KEY UPDATE p_value=?, correlation_coefficient=?, sentence=?, updated_at=NOW(), relevance_score=?;',
             [
                 participantId,
                 correlation.featureOne,
@@ -311,9 +311,11 @@ class DbService {
                 correlation.pValue,
                 correlation.correlationCoefficient,
                 correlation.sentence,
+                correlation.relevanceScore,
                 correlation.pValue,
                 correlation.correlationCoefficient,
-                correlation.sentence
+                correlation.sentence,
+                correlation.relevanceScore
             ],
             (err,rows) => {
                 if (err) console.error('saving correlation failed',err);
@@ -351,7 +353,7 @@ class DbService {
                OR nl_correlations_hide_rules.feature=nl_correlations.feature_one
                OR nl_correlations_hide_rules.feature=nl_correlations.feature_two
             )
-            ORDER BY p_value ASC ${limitClause};`,
+            ORDER BY relevance_score DESC, p_value ASC ${limitClause};`,
             [participantId],
             (err,rows) => {
                 if (err) {
