@@ -5,7 +5,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 let DbService = require('../service/dbService');
-let dbService = new DbService();
+let dbService = DbService.getInstance();
 
 
 passport.serializeUser(function(user, done) {
@@ -91,7 +91,9 @@ router.use('/logout', function(req,res) {
  * @param next function in middle ware chain
  */
 router.ensureAuthenticated = function(req, res, next) {
+    //if (true){
     if (req.isAuthenticated()) {
+        //req.user = {participant_id:3} //3: iPhone, 4: Huawei
         next();
     } else {
         res.status(401).send();
