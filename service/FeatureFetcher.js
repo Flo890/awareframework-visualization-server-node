@@ -3,7 +3,7 @@ var DbService = require("./dbService");
 class FeatureFetcher {
 
     constructor(){
-        this.dbService = new DbService();
+        this.dbService = DbService.getInstance();
         this.datamappings = require('../config/datamappings.json');
     }
 

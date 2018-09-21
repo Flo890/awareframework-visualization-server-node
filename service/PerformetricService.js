@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 class PerformetricService {
 
     constructor() {
-        this.performetricDbService = new PerformetricDbService();
+        this.performetricDbService = PerformetricDbService.getInstance();
         this.config = require('../config/performetric.json');
     }
 

@@ -6,6 +6,13 @@ var path = require('path');
 
 class RescueTimeDbService extends DbService {
 
+    static getInstance(){
+        if (!RescueTimeDbService.rTinstance) {
+            RescueTimeDbService.rTinstance = new RescueTimeDbService();
+        }
+        return RescueTimeDbService.rTinstance;
+    }
+
     constructor(){
         super(() => {
             this.createTableIfNotExists();

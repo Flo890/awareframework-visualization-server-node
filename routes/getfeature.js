@@ -5,7 +5,7 @@ var router = express.Router();
 
 let featureFetcherInstance = new FeatureFetcher();
 let DbService = require('../service/dbService');
-let dbService = new DbService();
+let dbService = DbService.getInstance();
 
 /**
  * example call:

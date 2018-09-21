@@ -49,7 +49,7 @@ CREATE TABLE nl_correlations (
   sentence TEXT NOT NULL,
   updated_at DATETIME NOT NULL DEFAULT NOW(),
   relevance_score INT NOT NULL DEFAULT 0,
-  UNIQUE (participant_id, feature_one, feature_two, `from`, `to`)
+  UNIQUE (participant_id, feature_one, feature_two)
 );
 
 CREATE TABLE nl_correlations_hide_rules (

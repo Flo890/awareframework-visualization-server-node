@@ -3,16 +3,77 @@ let FeatureFetcher = require('./FeatureFetcher');
 let featureFetcher = new FeatureFetcher();
 var jStat = require('jStat').jStat;
 let DbService = require('./dbService');
-let dbService = new DbService();
+let dbService = DbService.getInstance();
+let moment = require('moment');
 
 const SIGNIFICANCE_THRESHOLD = 0.05;
 const featureMappings = require('../config/datamappings.json').mappings;
 const notInfluencableDomains = ['weather','environment']; // does not include outcome domains, albeit they are not influencable as well
 
+const KOLMOGROV_SMIRNOV_CRITICAL_VALUES = {
+    1: 0.975,
+    2: 0.84189,
+    3: 0.70760,
+    4: 0.62394,
+    5: 0.563,
+    6: 0.519,
+    7: 0.483,
+    8: 0.454,
+    9: 0.43,
+    10: 0.409,
+    11: 0.391,
+    12: 0.375,
+    13: 0.361,
+    14: 0.349,
+    15: 0.338,
+    16: 0.327,
+    17: 0.318,
+    18: 0.309,
+    19: 0.301,
+    20: 0.294,
+    21: 0.287,
+    22: 0.281,
+    23: 0.275,
+    24: 0.269,
+    25: 0.264,
+    26: 0.259,
+    27: 0.254,
+    28: 0.25,
+    29: 0.246,
+    30: 0.242,
+    31: 0.238,
+    32: 0.234,
+    33: 0.231,
+    34: 0.227,
+    35: 0.224,
+    40: 0.21017,
+    45: 0.19842,
+    50: 0.18845
+};
+const TIMESEGMENTS = [
+    {
+        key: 'morning',
+        start: 7*60*60,
+        end: 12*60*60
+    },
+    {
+        key: 'noon',
+        start: 12*60*60,
+        end: 14*60*60
+    },
+     {
+        key: 'afternoon',
+        start: 14*60*60,
+        end: 18*60*60
+    },
+     {
+        key: 'evening',
+        start: 18*60*60,
+        end: 24*60*60
+    }
+];
 
-const participantId = 3;
-const from = 1536530400000;
-const to = 1536945000000;
+
 
 /**
  * computes Natural Language Correlations as proposed by Bentley et al: https://dl.acm.org/citation.cfm?id=2503823
@@ -32,16 +93,31 @@ class CorrelationDetectionService {
         return true;
     }
 
-    async computeCorrelations() {
+    async computeCorrelations(participantId, email, cb) {
 
-        let results = await this.doComputeCorrelationsTypeOne(participantId, 'Florian.Bemmann@campus.lmu.de', from, to, 60, this.corrFilterFn);
+        const from = 1536530400000;
+        const to = moment().unix()*1000;//1536945000000;
+
+        // let resultThree = await this.doComputeCorrelationsTypeThree(participantId, 'Florian.Bemmann@campus.lmu.de', from, to, 10);
+        // console.log(`computation finished with ${resultThree.length} results`);
+        // let correlations3 = resultThree.filter(result => result.isSignificant); // filter out insignificant correlation
+        // correlations3.forEach(result => {
+        //     console.log(`sig. correlation of ${result.feature} with ${result.timesegment}. t: ${result.tValue}, p: ${result.pValue}, n: ${result.n}`);
+        // })
+        //
+        // if(true) return; // TODO remove after testing
+
+        let results = await this.doComputeCorrelationsTypeOne(participantId, email, from, to, 60, this.corrFilterFn);
 
         let correlations = results
             .filter(result => result.isSignificant); // filter out insignificant correlation
 
 
+
+        let response = '';
         // build sentences
-        correlations.forEach(correlation => {
+        for(let i = 0; i<correlations.length; i++){
+            let correlation = correlations[i];
             let nlc = this.buildSentence(correlation.featureOne, correlation.featureTwo, correlation.correlationCoefficient, correlation.pValue);
             let correlationEnriched = {
                 ...correlation,
@@ -64,14 +140,16 @@ class CorrelationDetectionService {
             }
             correlationEnriched.relevanceScore = relevanceScore;
 
+            response += `\n${nlc}`;
+
             dbService.saveNlCorrelation(
                 correlationEnriched,
                 participantId
             ,()=> {
                 console.log(nlc);
-            })
-
-        });
+            });
+        }
+        cb(response);
     }
 
     async testComputeCorrelations(){
@@ -238,19 +316,140 @@ class CorrelationDetectionService {
         return `${featureOne.includes('is') ? '' : 'You'} ${strengthAdjective} ${featureOneVerb} ${orderAdjective} on days where ${featureTwoVerb.includes('is') ? '' : 'you'} ${featureTwoVerb}`;
     }
 
+
+    async doComputeCorrelationsTypeThree(participantId, participantEmail, from, to, granularityMins, corrFilterFn) {
+        let mappings = require('../config/datamappings.json').mappings;
+        let featureNames = Object.keys(mappings);
+
+        let results = [];
+        let syncPromises = [];
+
+        for (let i = 0; i < featureNames.length; i++) {
+            let featureOne = featureNames[i];
+
+            syncPromises.push(new Promise(resolveSync => {
+
+                featureFetcher.getFeature(participantId, participantEmail, featureOne, from, to, granularityMins, async f1Data => {
+                    if (f1Data.length > 0) {
+
+                        const featureArray = f1Data
+                            .map(d => d.value)
+                            .sort((a, b) => a - b); // order dataset ascending
+
+                        // TODO for n > 50 use Chi-Square!
+
+                        // Kolmogrov Smirnov Test to check if feature is normal distributed, inspired by http://www.faes.de/Basis/Basis-Statistik/Basis-Statistik-Kolmogorov-Smi/basis-statistik-kolmogorov-smirnov.html
+
+                        const mean = jStat.mean(featureArray);
+                        const sd = jStat.stdev(featureArray);
+                        const n = featureArray.length;
+
+                        const distancesToNormalVerteilung = [];
+                        for (let k = 0; k < featureArray.length; k++) {
+                            // z = (x-mean)/SD  for each data point
+                            const z = (featureArray[k] - mean) / sd;
+                            // distance to plain of Standardnormalverteilung
+                            const plainOfStdNormalVerteilung = jStat.normal.pdf(z, 0, 1);
+                            // Standardnormalabstand für jeden Punkt berechnen: 0.: 1*1/n , 1.: 2*1/n , 2.: 3*1/n , ...
+                            const standardNormalDistance = (k + 1) * (1 / n);
+                            // abs. diff
+                            const absDiffToNormalDistance = Math.abs(plainOfStdNormalVerteilung - standardNormalDistance);
+                            distancesToNormalVerteilung[k] = absDiffToNormalDistance;
+                        }
+
+                        const maxDistance = Math.max(...distancesToNormalVerteilung);
+                        const ksCriticalValue = this.getKsCriticalValue(n);
+
+                        if (maxDistance > ksCriticalValue) {
+                            // this feature is not normal-distributed! So it is not suitable for t-test
+                            console.log(`feature ${featureOne} is not normal distributed. maxDistance: ${maxDistance}, n: ${n}, ksCriticalValue: ${ksCriticalValue}`);
+                        } else {
+                            console.log(`feature ${featureOne} IS normal distributed`);
+
+
+                            for (let j = 0; j < TIMESEGMENTS.length; j++) {
+                                let timesegment = TIMESEGMENTS[j];
+
+                                results.push(await new Promise(resolve => {
+
+                                    // get Stichprobe for timesegment
+                                    const stichprobe = this.getStichprobeOfDataForTimesegment(f1Data, timesegment);
+
+
+                                    if (f1Data.length > 0 && stichprobe.length > 0) {
+
+                                        // t formel von dem Blatt
+                                        const meanStichprobe = jStat.mean(stichprobe.map(d => d.value));
+                                        const nStichprobe = stichprobe.length;
+                                        const sdStichprobe = jStat.stdev(stichprobe.map(d => d.value));
+                                        let tValue = Math.sqrt(nStichprobe) * ((meanStichprobe - mean) / sdStichprobe);
+
+                                        let pValue = jStat.studentt.pdf(tValue, stichprobe.length);
+
+                                        resolve({
+                                            feature: featureOne,
+                                            timesegment: timesegment.key,
+                                            tValue: tValue,
+                                            pValue: pValue,
+                                            isSignificant: pValue < SIGNIFICANCE_THRESHOLD,
+                                            n: nStichprobe
+                                        });
+
+                                        console.log(`feature: ${featureOne}`);
+                                        console.log(`timesegment: ${timesegment.key}`);
+                                        console.log(`input arrays size: ${n} / ${nStichprobe}`);
+                                        console.log(`t-value: ${pValue}`);
+                                        console.log(`p-value: ${pValue}`);
+
+                                    } else {
+                                        resolve({});
+                                    }
+
+                                }));
+
+                            }
+                        }
+                    }
+                    resolveSync();
+                });
+            }));
+
+        }
+
+        await Promise.all(syncPromises).catch(error => {console.error(`error in sync promise`,error)});
+
+        return results.filter(result => {
+            return Object.keys(result).length > 0
+        });
+    }
+
+    getKsCriticalValue(n){
+        if (KOLMOGROV_SMIRNOV_CRITICAL_VALUES[n]) {
+            return KOLMOGROV_SMIRNOV_CRITICAL_VALUES[n];
+        }
+        if (KOLMOGROV_SMIRNOV_CRITICAL_VALUES[Math.floor(n/5)*5]) {
+            return KOLMOGROV_SMIRNOV_CRITICAL_VALUES[Math.floor(n/5)*5];
+        }
+        return 1/Math.sqrt(n);
+    }
+
+    /**
+     *
+     * @param data  [...{timestamp:1234,value:42}, ...]
+     * @param timesegment one of the morning, noon, ... objects
+     */
+    getStichprobeOfDataForTimesegment(data,timesegment){
+        return data.filter(d => {
+            let millisInDay = d.timestamp % (24*60*60*1000);
+            return(millisInDay+(2*60*60*1000) >= timesegment.start*1000 && millisInDay+(2*60*60*1000) <= timesegment.end*1000)
+        });
+    }
+
     // --------- client methods ---------
     getCorrelations(participantId, cb){
-        dbService.getCorrelationsForUser(participantId, from, to ,100000, correlations => {
-            let ratedCorrelations = correlations.sort((c1,c2) => {
-
-            });
-            correlations.forEach(c => {
-               if (c.domain_one == 'fatigue') {
-                   c.relevance = 100;
-               } // TODO
-            });
-            cb(ratedCorrelations);
-        });
+        let from  = 1;
+        let to = 2000000000000;
+        dbService.getCorrelationsForUser(participantId, from, to ,100000, cb);
     }
 
     addHideCorrelationById(correlationId, participantId, cb){

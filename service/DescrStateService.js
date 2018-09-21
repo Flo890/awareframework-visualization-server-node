@@ -4,7 +4,7 @@ let FeatureFetcher = require('./FeatureFetcher');
 class DescrStateService {
 
     constructor(){
-        this.dbService = new DbService();
+        this.dbService = DbService.getInstance();
         this.featureFetcher = new FeatureFetcher();
         this.accumulatorToFnMapping = { // need this to prevent sql injection
             // a real accumulator is one like avg that computes a new value. Max instead does only select one of the existing values

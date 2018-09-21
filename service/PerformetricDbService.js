@@ -5,6 +5,13 @@ var path = require('path');
 
 class PerformetricDbService extends DbService {
 
+    static getInstance(){
+        if(!PerformetricDbService.pmInstance){
+            PerformetricDbService.pmInstance = new PerformetricDbService();
+        }
+        return PerformetricDbService.pmInstance;
+    }
+
     constructor(){
         super(() => {
             this.createTableIfNotExists();

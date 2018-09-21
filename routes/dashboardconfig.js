@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const DbService = require('../service/dbService');
-let dbService = new DbService();
+let dbService = DbService.getInstance();
 
 /**
  * persists the dashboard config for a user

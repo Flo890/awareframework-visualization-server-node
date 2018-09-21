@@ -5,6 +5,13 @@ const md5 = require('md5');
 
 class DbService {
 
+    static getInstance(){
+        if (!DbService.instance){
+            DbService.instance = new DbService();
+        }
+        return DbService.instance;
+    }
+
     constructor(callback){
         var mysql = require('mysql');
 
@@ -140,7 +147,7 @@ class DbService {
                     let apikeyHash = 'does not exist';
                     if (err) {
                         console.error(err);
-                    } else if (rows.length == 0){
+                    } else if (rows.length == 0 || rows[0].rescuetime_api_key == null) {
                         // value stays 'does not exist', so no data will be found later
                     } else {
                         apikeyHash = md5(rows[0].rescuetime_api_key);
@@ -335,10 +342,10 @@ class DbService {
     getCorrelationsForUser(participantId, from, to, topN, cb){
         let whereClause = '';
         if (from) {
-            whereClause += ` AND \`from\`=${from}`;
+            whereClause += ` AND \`from\`>=${from}`;
         }
         if (to) {
-            whereClause += ` AND \`to\`=${to}`;
+            whereClause += ` AND \`to\`<=${to}`;
         }
         let limitClause = '';
         if (topN) {

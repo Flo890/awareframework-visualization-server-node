@@ -5,7 +5,7 @@ let RescueTimeDbService = require('./RescueTimeDbService');
 class RescueTimeService {
 
     constructor(){
-        this.rescuetimeDbService = new RescueTimeDbService();
+        this.rescuetimeDbService = RescueTimeDbService.getInstance();
     }
 
     sync(callback){

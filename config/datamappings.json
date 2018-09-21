@@ -111,7 +111,7 @@
             "display_name": "time spent in conversation",
             "display_unit": "minutes",
             "domain": "action-work",
-            "correlation_verb": "spend more time in conversation"
+            "correlation_verb": "spend time in conversation"
         },
         "time_in_noise": {
             "sources": [
@@ -131,7 +131,7 @@
             "display_name": "time spent in noisy environment",
             "display_unit": "minutes",
             "domain": "environment",
-            "correlation_verb": "spend more time in noisy environment"
+            "correlation_verb": "spend time in noisy environment"
         },
         "phone_usage": {
             "feature_generator": "PhoneUsageFeatureGenerator",
@@ -148,7 +148,7 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "environment",
-            "correlation_verb": "spend more time at home"
+            "correlation_verb": "spend time at home"
         },
         "time_at_work_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
@@ -157,7 +157,7 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "environment",
-            "correlation_verb": "spend more time at work"
+            "correlation_verb": "spend time at work"
         },
         "activity_recognition_still": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
@@ -240,7 +240,7 @@
             "display_name": "time under moderate fatigue",
             "display_unit": "minutes",
             "domain": "fatigue",
-            "correlation_verb": "spend more time under moderate fatigue"
+            "correlation_verb": "spend time under moderate fatigue"
         },
         "minutes_no_fatigue": {
             "sources": [
@@ -266,7 +266,7 @@
             "display_name": "time under extreme fatigue",
             "display_unit": "minutes",
             "domain": "fatigue",
-            "correlation_verb": "spend more time under extreme fatigue"
+            "correlation_verb": "spend time under extreme fatigue"
         },
         "calls_count": {
             "sources": [
@@ -288,7 +288,7 @@
             ],
             "display_name":"amount calls done or answered",
             "domain": "action-phone",
-            "correlation_verb": "spend more time with calls"
+            "correlation_verb": "spend time with calls"
         },
         "time_email": {
             "sources": [

@@ -27,4 +27,11 @@ router.post('/hide',(req,res,next) => {
    }
 });
 
+/**
+ * http://localhost:3333/correlations/compute?computeParticipantId=3&computeEmail=Florian.Bemmann@campus.lmu.de
+ */
+router.get('/compute', (req,res,next) => {
+   correlationDetectionService.computeCorrelations(req.query.computeParticipantId, req.query.computeEmail, result => {res.status(200).send(result)});
+});
+
 module.exports = router;

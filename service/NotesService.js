@@ -3,7 +3,7 @@ var DbService = require("./dbService");
 class NotesService {
 
     constructor(){
-        this.dbService = new DbService();
+        this.dbService = DbService.getInstance();
     }
 
     getAllNotesForParticipant(participantId, type, callback){
