@@ -11,7 +11,8 @@
             "display_name": "outside temperature",
             "display_unit": "°C",
             "domain": "weather",
-            "correlation_verb": "it is warmer outside"
+            "correlation_verb": "it is warmer outside",
+            "datasource": "aware"
         },
         "pressure": {
             "sources": [
@@ -24,7 +25,8 @@
             "display_name": "air pressure",
             "display_unit": "hPa",
             "domain": "weather",
-            "correlation_verb": "air pressure is high"
+            "correlation_verb": "air pressure is high",
+            "datasource": "aware"
         },
         "humidity": {
             "sources": [
@@ -37,7 +39,8 @@
             "display_name": "humidity",
             "display_unit": "%",
             "domain": "weather",
-            "correlation_verb": "air humidity is high"
+            "correlation_verb": "air humidity is high",
+            "datasource": "aware"
         },
         "cloudiness": {
             "sources": [
@@ -49,7 +52,8 @@
             "display_name": "cloudiness",
             "display_unit": "%",
             "domain": "weather",
-            "correlation_verb": "it is cloudy"
+            "correlation_verb": "it is cloudy",
+            "datasource": "aware"
         },
         "ambient_brightness": {
             "sources": [
@@ -62,7 +66,8 @@
             "display_name": "ambient brightness",
             "display_unit": "lux",
             "domain": "environment",
-            "correlation_verb": "are in bright environment"
+            "correlation_verb": "are in bright environment",
+            "datasource": "aware"
         },
         "ambient_noise_plugin": {
             "sources": [
@@ -74,7 +79,8 @@
             "display_name": "ambient noise (plugin)",
             "display_unit": "dB",
             "domain": "environment",
-            "correlation_verb": "are in louder environment"
+            "correlation_verb": "are in louder environment",
+            "datasource": "aware"
         },
         "ambient_noise_studentlife": {
             "sources": [
@@ -91,7 +97,8 @@
             ],
             "display_name": "ambient noise (studentlife)",
             "domain": "environment",
-            "correlation_verb": "are in louder environment"
+            "correlation_verb": "are in louder environment",
+            "datasource": "aware"
         },
         "time_in_conversation": {
             "sources": [
@@ -111,7 +118,8 @@
             "display_name": "time spent in conversation",
             "display_unit": "minutes",
             "domain": "action-work",
-            "correlation_verb": "spend time in conversation"
+            "correlation_verb": "spend time in conversation",
+            "datasource": "aware"
         },
         "time_in_noise": {
             "sources": [
@@ -131,7 +139,8 @@
             "display_name": "time spent in noisy environment",
             "display_unit": "minutes",
             "domain": "environment",
-            "correlation_verb": "spend time in noisy environment"
+            "correlation_verb": "spend time in noisy environment",
+            "datasource": "aware"
         },
         "phone_usage": {
             "feature_generator": "PhoneUsageFeatureGenerator",
@@ -139,7 +148,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-phone",
-            "correlation_verb": "use your phone more"
+            "correlation_verb": "use your phone more",
+            "datasource": "aware"
         },
         "time_at_home_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
@@ -148,7 +158,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "environment",
-            "correlation_verb": "spend time at home"
+            "correlation_verb": "spend time at home",
+            "datasource": "aware"
         },
         "time_at_work_by_wifi": {
             "feature_generator": "HomeWorkTimeFeatureGenerator",
@@ -157,7 +168,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "environment",
-            "correlation_verb": "spend time at work"
+            "correlation_verb": "spend time at work",
+            "datasource": "aware"
         },
         "activity_recognition_still": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
@@ -167,7 +179,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-self",
-            "correlation_verb": "move less"
+            "correlation_verb": "move less",
+            "datasource": "aware"
         },
         "activity_recognition_on_foot": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
@@ -177,7 +190,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-self",
-            "correlation_verb": "walk"
+            "correlation_verb": "walk",
+            "datasource": "aware"
         },
         "activity_recognition_on_bicycle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
@@ -187,7 +201,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-self",
-            "correlation_verb": "ride your bicycle"
+            "correlation_verb": "ride your bicycle",
+            "datasource": "aware"
         },
         "activity_recognition_in_vehicle": {
             "feature_generator": "ActivityRecognitionFeatureGenerator",
@@ -197,7 +212,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-self",
-            "correlation_verb": "ride in vehicle"
+            "correlation_verb": "ride in vehicle",
+            "datasource": "aware"
         },
         "linear_accelerometer": {
                 "sources": [
@@ -209,14 +225,16 @@
             "display_name": "phone movement",
             "display_unit": "m/s²",
             "domain": "action-phone",
-            "correlation_verb": "move your phone"
+            "correlation_verb": "move your phone",
+            "datasource": "aware"
         },
         "sleep": {
             "feature_generator": "SleepFeatureGenerator",
             "display_name": "sleep amount",
             "display_unit": "hours",
             "domain": "action-self",
-            "correlation_verb": "sleep"
+            "correlation_verb": "sleep",
+            "datasource": "aware"
         },
         "fatigue_level": {
             "sources": [
@@ -227,7 +245,8 @@
             ],
             "display_name": "fatigue level",
             "domain": "fatigue",
-            "correlation_verb": "have higher fatigue level"
+            "correlation_verb": "have higher fatigue level",
+            "datasource": "performetric"
         },
         "minutes_moderate_fatigue": {
             "sources": [
@@ -240,7 +259,8 @@
             "display_name": "time under moderate fatigue",
             "display_unit": "minutes",
             "domain": "fatigue",
-            "correlation_verb": "spend time under moderate fatigue"
+            "correlation_verb": "spend time under moderate fatigue",
+            "datasource": "performetric"
         },
         "minutes_no_fatigue": {
             "sources": [
@@ -253,7 +273,8 @@
             "display_name": "time under no fatigue",
             "display_unit": "minutes",
             "domain": "fatigue",
-            "correlation_verb": "spend more time under no fatigue"
+            "correlation_verb": "spend more time under no fatigue",
+            "datasource": "performetric"
         },
         "minutes_extreme_fatigue": {
             "sources": [
@@ -266,7 +287,8 @@
             "display_name": "time under extreme fatigue",
             "display_unit": "minutes",
             "domain": "fatigue",
-            "correlation_verb": "spend time under extreme fatigue"
+            "correlation_verb": "spend time under extreme fatigue",
+            "datasource": "performetric"
         },
         "calls_count": {
             "sources": [
@@ -277,7 +299,8 @@
             ],
             "display_name":"amount of calls",
             "domain": "action-phone",
-            "correlation_verb": "make calls"
+            "correlation_verb": "make calls",
+            "datasource": "aware"
         },
         "calls_minutes": {
             "sources": [
@@ -288,7 +311,8 @@
             ],
             "display_name":"amount calls done or answered",
             "domain": "action-phone",
-            "correlation_verb": "spend time with calls"
+            "correlation_verb": "spend time with calls",
+            "datasource": "aware"
         },
         "time_email": {
             "sources": [
@@ -303,7 +327,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-work",
-            "correlation_verb": "spend time emailing"
+            "correlation_verb": "spend time emailing",
+            "datasource": "rescuetime"
         },
         "time_productivity_level_0": {
             "sources": [
@@ -318,7 +343,8 @@
             "display_unit": "minutes",
             "divisor": 60,
             "domain": "action-work",
-            "correlation_verb": "spend time with unproductive tasks"
+            "correlation_verb": "spend time with unproductive tasks",
+            "datasource": "rescuetime"
         }
     }
 }

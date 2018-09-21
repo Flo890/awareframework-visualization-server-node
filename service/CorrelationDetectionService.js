@@ -153,7 +153,18 @@ class CorrelationDetectionService {
     }
 
     async testComputeCorrelations(){
-        this.computeCorrelations();
+        //this.computeCorrelations();
+
+        const from = 1536530400000;
+        const to = moment().unix()*1000;//1536945000000;
+
+        let resultThree = await this.doComputeCorrelationsTypeThree(16, 'mail here', from, to, 10);
+        console.log(`computation finished with ${resultThree.length} results`);
+        let correlations3 = resultThree.filter(result => result.isSignificant); // filter out insignificant correlation
+        correlations3.forEach(result => {
+            console.log(`sig. correlation of ${result.feature} with ${result.timesegment}. t: ${result.tValue}, p: ${result.pValue}, n: ${result.n}`);
+        });
+
         // let results = await this.doComputeCorrelationsTypeOne(3,'Florian.Bemmann@campus.lmu.de',1536530400000,1536945000000,60);
         //
         // console.log('----------------------');

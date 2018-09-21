@@ -63,7 +63,7 @@ class DbService {
     };
 
     getUserByParticipantId(participantId, callback) {
-        this.meta_connection.query('SELECT _id as id,device_id,participant_id,password FROM study_participants WHERE participant_id=?', [participantId], function(err, rows) {
+        this.meta_connection.query('SELECT _id as id,device_id,participant_id,password,rescuetime_api_key FROM study_participants WHERE participant_id=?', [participantId], function(err, rows) {
             if (err) {
                 console.error('could not fetch participant',err);
                 callback(err,null);

@@ -45,6 +45,11 @@ router.get('/getallavailables', function(req,res,next) {
                     console.log(`filtered out ${featureKey}`);
                     return false;
                 }
+                if (!user.rescuetime_api_key && mappingConfig[featureKey].datasource == 'rescuetime'){
+                    // filter out RescueTime features if api key not set
+                    console.log(`filtered out ${featureKey}`);
+                    return false;
+                }
                 if (mappingConfig[featureKey].sources) {
                     // if this is a feature with source specification, and there is not exclusion-free source, and each only_for_os label does match this request's os, filter this feature out
                     for (let i = 0; i<mappingConfig[featureKey].sources.length; i++){
