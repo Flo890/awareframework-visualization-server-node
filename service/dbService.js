@@ -166,6 +166,10 @@ class DbService {
             whereDeviceIdClause = '';
             parameters = [from, to];
         }
+        // TODO ugly workaround
+        if (sourceConfig.source_table == 'plugin_openweather'){
+            whereDeviceIdClause = '(device_id=? OR device_id="server") AND'; // also consider server-loaded weather data
+        }
         this.aware_data_connection.query(
             `SELECT ${timestampSelectClause}, ${selector} FROM ${sourceConfig.source_table} WHERE ${whereDeviceIdClause} timestamp>=? AND timestamp <=? ${additionalWhereClause} ${groupClause} ORDER BY timestamp ASC;`
             , parameters
@@ -393,7 +397,17 @@ class DbService {
             });
     }
 
-
+    saveCurrentWeather(timestamp, deviceId, city, temperature, temperatureMax, temperatureMin, unit, humidity, pressure, windSpeed, windDegrees, cloudiness, rain, snow, sunrise, sunset, weatherIconId, weatherDescription, cb){
+        this.aware_data_connection.query(
+            'INSERT INTO plugin_openweather ' +
+            '(timestamp, device_id, city, temperature, temperature_max, temperature_min, unit, humidity, pressure, wind_speed, wind_degrees, cloudiness, rain, snow, sunrise, sunset, weather_icon_id, weather_description)' +
+            'VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);',
+            [timestamp, deviceId, city, temperature, temperatureMax, temperatureMin, unit, humidity, pressure, windSpeed, windDegrees, cloudiness, rain, snow, sunrise, sunset, weatherIconId, weatherDescription],
+            (err,rows) => {
+                if(err) console.error(`inserting weather failed`,err);
+                cb();
+            });
+    }
 
 }
 module.exports = DbService;

@@ -1,0 +1,6 @@
+// TODO set properties, remove comments, and rename this file to openweather.json
+{
+  "enable": true,
+  "city": "M%C3%BCnchen,DE", // TODO set request location
+  "apikey": "api key here" // TODO set api key https://openweathermap.org/api
+}

@@ -81,4 +81,12 @@ var rescuetimeScheduler = schedule.scheduleJob('0 0 * * * *', function(){
     rescueTimeService.sync(res => {console.log(res)});
 });
 
+// OpenWeatherMap
+let OpenweatherSerivce = require('./service/OpenweatherService');
+let openWeatherService = new OpenweatherSerivce();
+var openWeatherScheduler = schedule.scheduleJob('*/5 * * * *', function(){
+    console.log('OpenWeather scheduler triggered');
+    openWeatherService.loadCurrentWeather();
+});
+
 module.exports = app;
