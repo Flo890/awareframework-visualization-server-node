@@ -17,33 +17,33 @@ passport.deserializeUser(function(id, done) {
 });
 
 
-passport.use('dashboard-register', new LocalStrategy({
-    usernameField: 'participant_id',
-    passwordField: 'password',
-    passReqToCallback: true
-}, function(req, participant_id, password, done) {
-    var newUser;
-    if (participant_id && password) {
-        newUser = {
-            participant_id: participant_id,
-            password: bcrypt.hashSync(password, null, null),
-            device_id: req.body.device_id,
-            rescuetime_api_key: req.body.rescuetime_api_key
-        };
-
-        dbService.addUser(newUser.participant_id, newUser.password, newUser.device_id, newUser.rescuetime_api_key, (err,id) => {
-            if (!err) {
-                newUser.id = id;
-                done(null, newUser);
-            } else {
-                done(err);
-            }
-        });
-
-    } else {
-        done(new Error('parameters missing'));
-    }
-}));
+// passport.use('dashboard-register', new LocalStrategy({
+//     usernameField: 'participant_id',
+//     passwordField: 'password',
+//     passReqToCallback: true
+// }, function(req, participant_id, password, done) {
+//     var newUser;
+//     if (participant_id && password) {
+//         newUser = {
+//             participant_id: participant_id,
+//             password: bcrypt.hashSync(password, null, null),
+//             device_id: req.body.device_id,
+//             rescuetime_api_key: req.body.rescuetime_api_key
+//         };
+//
+//         dbService.addUser(newUser.participant_id, newUser.password, newUser.device_id, newUser.rescuetime_api_key, (err,id) => {
+//             if (!err) {
+//                 newUser.id = id;
+//                 done(null, newUser);
+//             } else {
+//                 done(err);
+//             }
+//         });
+//
+//     } else {
+//         done(new Error('parameters missing'));
+//     }
+// }));
 
 
 passport.use('dashboard-login', new LocalStrategy({
@@ -68,10 +68,10 @@ passport.use('dashboard-login', new LocalStrategy({
     }));
 
 
-router.post('/register', passport.authenticate('dashboard-register', {
-    successRedirect: '/webapp',
-    failureRedirect: '/register.html'
-}));
+// router.post('/register', passport.authenticate('dashboard-register', {
+//     successRedirect: '/webapp',
+//     failureRedirect: '/register.html'
+// }));
 
 router.post('/login', passport.authenticate('dashboard-login', {
     successRedirect: '/webapp',
