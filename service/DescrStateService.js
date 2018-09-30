@@ -33,7 +33,7 @@ class DescrStateService {
                 // is usual feature
                 this.dbService.queryForDescriptiveStatistics(dataMapping.sources, this.accumulatorToFnMapping[config.accumulator.function], (config.featureName == 'fatigue_level' ? participantEmail : deviceId), config.from, config.to, data => {
 
-                    if (config.featureName == 'temperature' && data[0].value > 100){
+                    if (config.featureName == 'temperature' && data.length > 0 && data[0].value > 100){
                         data[0].value -= 273.15;
                     }
 
