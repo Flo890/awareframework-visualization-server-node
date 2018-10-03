@@ -223,7 +223,18 @@ class DbService {
 
     queryForDescriptiveStatistics(sources, accumulationMethod, deviceId, from, to, callback){
         let tableQueries = sources.map(source => {
-            return `SELECT ${source.source_column} as value, timestamp FROM ${source.source_table} WHERE device_id=? AND timestamp>=? AND timestamp<=?`
+
+            let selector = '"selector choice failed"';
+            if (source.sql_selector){
+                selector = source.sql_selector;
+            }
+            else if (source.source_column) {
+                selector = `${source.source_column} as value`;
+            } else {
+                console.warn('in sourceConfig you should set one of sql_selector or source_column');
+            }
+
+            return `SELECT ${selector}, timestamp FROM ${source.source_table} WHERE device_id=? AND timestamp>=? AND timestamp<=?`
         });
         let entriesQuery = tableQueries.join(" UNION ");
         let maxValueSubquery = `SELECT ${accumulationMethod.fn}(value) as value FROM (${entriesQuery}) as unionedTable2`

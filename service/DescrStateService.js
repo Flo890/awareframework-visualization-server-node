@@ -48,7 +48,10 @@ class DescrStateService {
                     // here the accumulation/selection has to be done manually :(
                     let accumulationMethod = this.accumulatorToFnMapping[config.accumulator.function];
                     let accumulatedDataObj = undefined;
-                    if (accumulationMethod.isRealAccumulator) {
+                    if (data.length == 0){
+                        accumulatedDataObj = {value: '-'}
+                    }
+                    else if (accumulationMethod.isRealAccumulator) {
                         // calculation, e.g. average
                         switch(accumulationMethod.fn){
                             case 'avg':
